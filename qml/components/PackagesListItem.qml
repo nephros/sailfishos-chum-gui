@@ -65,7 +65,7 @@ Item {
         color: Theme.highlightColor
         font.pixelSize: Theme.fontSizeSmall
         height: visible ? implicitHeight : 0
-        text: model.packagePackager ?  model.packagePackager : model.packageDeveloper
+        text: model.packagePackager ?  '%1 | %2'.arg(packageDeveloper).arg(model.packagePackager) : model.packageDeveloper
         truncationMode: TruncationMode.Fade
         visible: text
     }
