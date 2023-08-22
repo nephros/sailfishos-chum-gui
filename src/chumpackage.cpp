@@ -38,6 +38,8 @@ ChumPackage::ChumPackage(const QString &id, QObject *parent)
 
 static QString nameFormatting(const QString &name, const QString &login) {
     if (!login.isEmpty() && !name.isEmpty())
+        if (QString::compare (login, name, Qt::CaseSensitive))
+            return login;
         return QStringLiteral("%1 (%2)").arg(name, login);
     if (!login.isEmpty()) return login;
     if (!name.isEmpty()) return name;
