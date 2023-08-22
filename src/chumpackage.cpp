@@ -49,7 +49,7 @@ QString ChumPackage::developer() const {
 }
 
 QString ChumPackage::packager() const {
-    return nameFormatting(m_packager_name, m_packager_login);
+    return nameFormatting(m_packager_name, m_packager_name);
 }
 
 bool ChumPackage::installed() const {
@@ -268,6 +268,7 @@ void ChumPackage::setDeveloperName(const QString &name) {
     SET_IF_EMPTY(m_developer_name, PackageDeveloperRole, name);
 }
 
+/*
 void ChumPackage::setPackagerLogin(const QString &login) {
     // If packager name from the spec file was used, then do not set a separate packager name.
     // As it is impossible to provide a separate packager name via RPM spec file, this prevents
@@ -275,8 +276,13 @@ void ChumPackage::setPackagerLogin(const QString &login) {
     if (m_packager_name_from_spec) return;
     SET_IF_EMPTY(m_packager_login, PackagePackagerRole, login);
 }
+*/
 
 void ChumPackage::setPackagerName(const QString &name) {
+    // If packager name from the spec file was used, then do not set a separate packager name.
+    // As it is impossible to provide a separate packager name via RPM spec file, this prevents
+    // conflicting records.
+    if (m_packager_name_from_spec) return;
     SET_IF_EMPTY(m_packager_name, PackagePackagerRole, name);
 }
 
