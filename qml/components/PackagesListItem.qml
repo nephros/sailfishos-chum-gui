@@ -65,7 +65,14 @@ Item {
         color: Theme.highlightColor
         font.pixelSize: Theme.fontSizeSmall
         height: visible ? implicitHeight : 0
-        text: model.packagePackager ?  '%1 | %2'.arg(packageDeveloper).arg(model.packagePackager) : model.packageDeveloper
+        //text: model.packagePackager ?  '%1 | %2'.arg(packageDeveloper).arg(model.packagePackager) : model.packageDeveloper
+        text: {
+            if ( (model.packagePackager) && (model.packageDeveloper) ) {
+                  return '%1 | %2'.arg(packageDeveloper).arg(model.packagePackager)
+            }
+            if (model.packageDeveloper) return model.packageDeveloper;
+            if (model.packagePackager)  return model.packagePackager;
+        }
         truncationMode: TruncationMode.Fade
         visible: text
     }
