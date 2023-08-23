@@ -8,9 +8,16 @@ on:
         required: true
         default: 'master'
         type: string
-env:
-  LATEST: 4.5.0.16
-  # See https://hub.docker.com/r/coderus/sailfishos-platform-sdk/tags
+      SFOS_ARCH:
+        description: 'Build env target arch, one of: aarch64, armv7hl, i486'
+        required: true
+        default: 'i486'
+        type: string
+      SFOS_RELEASE:
+        description: 'Build env target'
+        required: true
+        default: '4.5.0.16'
+        type: string
 
 jobs:
   build:
@@ -35,100 +42,10 @@ jobs:
     #    path: $GITHUB_WORKSPACE/…
     #    key: cache
 
-    - name: Build ${{ env.ARCH }} on ${{ env.RELEASE }}
+    - name: Build ${{ inputs.SFOS_ARCH }} on ${{ inputs.SFOS_RELEASE }}
       env:
-        ARCH: aarch64
-        RELEASE: ${{ env.LATEST }}
-      run: |
-        set -x
-        mkdir -p output/$RELEASE/$ARCH
-        docker run --rm -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/sh -xc '
-           mkdir -p rpmbuild/SOURCES
-           printf %s "${{ secrets.TOKEN_GITHUB }}" > rpmbuild/SOURCES/token-github.txt
-           printf %s "${{ secrets.TOKEN_GITLAB }}" > rpmbuild/SOURCES/token-gitlab.txt
-           mkdir -p build/rpm
-           cp rpmbuild/SOURCES/token-git??b.txt build/rpm/
-           cd build
-           cp -r /share/. .
-           mb2 -t SailfishOS-$1-$2 build -d
-           sudo cp -r RPMS/. /share/output/$1/$2/' sh_mb2 $RELEASE $ARCH
-
-    - name: Build ${{ env.ARCH }} on ${{ env.RELEASE }}
-      env:
-        ARCH: armv7hl
-        RELEASE: ${{ env.LATEST }}
-      run: |
-        set -x
-        mkdir -p output/$RELEASE/$ARCH
-        docker run --rm -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/sh -xc '
-           mkdir -p rpmbuild/SOURCES
-           printf %s "${{ secrets.TOKEN_GITHUB }}" > rpmbuild/SOURCES/token-github.txt
-           printf %s "${{ secrets.TOKEN_GITLAB }}" > rpmbuild/SOURCES/token-gitlab.txt
-           mkdir -p build/rpm
-           cp rpmbuild/SOURCES/token-git??b.txt build/rpm/
-           cd build
-           cp -r /share/. .
-           mb2 -t SailfishOS-$1-$2 build -d
-           sudo cp -r RPMS/. /share/output/$1/$2/' sh_mb2 $RELEASE $ARCH
-
-    - name: Build ${{ env.ARCH }} on ${{ env.RELEASE }}
-      env:
-        ARCH: i486
-        RELEASE: ${{ env.LATEST }}
-      run: |
-        set -x
-        mkdir -p output/$RELEASE/$ARCH
-        docker run --rm -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/sh -xc '
-           mkdir -p rpmbuild/SOURCES
-           printf %s "${{ secrets.TOKEN_GITHUB }}" > rpmbuild/SOURCES/token-github.txt
-           printf %s "${{ secrets.TOKEN_GITLAB }}" > rpmbuild/SOURCES/token-gitlab.txt
-           mkdir -p build/rpm
-           cp rpmbuild/SOURCES/token-git??b.txt build/rpm/
-           cd build
-           cp -r /share/. .
-           mb2 -t SailfishOS-$1-$2 build -d
-           sudo cp -r RPMS/. /share/output/$1/$2/' sh_mb2 $RELEASE $ARCH
-
-    - name: Build ${{ env.ARCH }} on ${{ env.RELEASE }}
-      env:
-        ARCH: aarch64
-        RELEASE: 4.0.1.45
-      run: |
-        set -x
-        mkdir -p output/$RELEASE/$ARCH
-        docker run --rm -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/sh -xc '
-           mkdir -p rpmbuild/SOURCES
-           printf %s "${{ secrets.TOKEN_GITHUB }}" > rpmbuild/SOURCES/token-github.txt
-           printf %s "${{ secrets.TOKEN_GITLAB }}" > rpmbuild/SOURCES/token-gitlab.txt
-           mkdir -p build/rpm
-           cp rpmbuild/SOURCES/token-git??b.txt build/rpm/
-           cd build
-           cp -r /share/. .
-           mb2 -t SailfishOS-$1-$2 build -d
-           sudo cp -r RPMS/. /share/output/$1/$2/' sh_mb2 $RELEASE $ARCH
-
-    - name: Build ${{ env.ARCH }} on ${{ env.RELEASE }}
-      env:
-        ARCH: armv7hl
-        RELEASE: 4.0.1.45
-      run: |
-        set -x
-        mkdir -p output/$RELEASE/$ARCH
-        docker run --rm -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/sh -xc '
-           mkdir -p rpmbuild/SOURCES
-           printf %s "${{ secrets.TOKEN_GITHUB }}" > rpmbuild/SOURCES/token-github.txt
-           printf %s "${{ secrets.TOKEN_GITLAB }}" > rpmbuild/SOURCES/token-gitlab.txt
-           mkdir -p build/rpm
-           cp rpmbuild/SOURCES/token-git??b.txt build/rpm/
-           cd build
-           cp -r /share/. .
-           mb2 -t SailfishOS-$1-$2 build -d
-           sudo cp -r RPMS/. /share/output/$1/$2/' sh_mb2 $RELEASE $ARCH
-
-    - name: Build ${{ env.ARCH }} on ${{ env.RELEASE }}
-      env:
-        ARCH: i486
-        RELEASE: 4.0.1.45
+        ARCH:    ${{ inputs.SFOS_ARCH }}
+        RELEASE: ${{ inputs.SFOS_RELEASE }}
       run: |
         set -x
         mkdir -p output/$RELEASE/$ARCH
