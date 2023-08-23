@@ -118,7 +118,6 @@ public:
     void setDeveloperName(const QString &name);
     void setForksCount(int count);
     void setIssuesCount(int count);
-    void setPackagerLogin(const QString &login);
     void setPackagerName(const QString &name);
     void setReleasesCount(int count);
     void setStarsCount(int count);
@@ -162,7 +161,6 @@ private:
     QString     m_license;
     QString     m_name;
     QString     m_package_name;
-    QString     m_packager_login;
     QString     m_packager_name;
     bool        m_packager_name_from_spec{false};
     QString     m_packaging_repo_url;
