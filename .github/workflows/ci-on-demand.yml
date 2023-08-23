@@ -2,7 +2,12 @@ name: CI on demand
 
 on:
   workflow_dispatch:
-
+    inputs:
+      SOURCE_BRANCH:
+        description: 'Branch to use as source'
+        required: true
+        default: 'master'
+        type: string
 env:
   LATEST: 4.5.0.16
   # See https://hub.docker.com/r/coderus/sailfishos-platform-sdk/tags
@@ -15,6 +20,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.SOURCE_BRANCH }}
 
     #- name: Prepare
     #  run: 
