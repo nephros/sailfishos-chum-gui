@@ -1,9 +1,7 @@
-name: CI on tags
+name: CI on demand
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_dispatch:
 
 env:
   LATEST: 4.5.0.16
