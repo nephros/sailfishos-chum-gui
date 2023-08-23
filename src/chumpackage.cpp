@@ -49,7 +49,7 @@ QString ChumPackage::developer() const {
 }
 
 QString ChumPackage::packager() const {
-    return nameFormatting(m_packager_name, m_packager_login);
+    return m_packager_name.isEmpty() ? QString() : m_packager_name;
 }
 
 bool ChumPackage::installed() const {
@@ -199,7 +199,6 @@ void ChumPackage::setDetails(const PackageKit::Details &v) {
     m_packager_name = json.value("PackagedBy").toString();
     if (m_packager_name.isEmpty())
         m_packager_name = json.value("PackagerName").toString(); // spec v0 legacy
-    m_packager_name_from_spec = !m_packager_name.isEmpty();
     m_categories = json.value("Categories").toVariant().toStringList();
     // guess category only if it is empty
     if (is_lib && m_categories.isEmpty())
@@ -266,14 +265,6 @@ void ChumPackage::setDeveloperLogin(const QString &login) {
 
 void ChumPackage::setDeveloperName(const QString &name) {
     SET_IF_EMPTY(m_developer_name, PackageDeveloperRole, name);
-}
-
-void ChumPackage::setPackagerLogin(const QString &login) {
-    // If packager name from the spec file was used, then do not set a separate packager name.
-    // As it is impossible to provide a separate packager name via RPM spec file, this prevents
-    // conflicting records.
-    if (m_packager_name_from_spec) return;
-    SET_IF_EMPTY(m_packager_login, PackagePackagerRole, login);
 }
 
 void ChumPackage::setPackagerName(const QString &name) {
