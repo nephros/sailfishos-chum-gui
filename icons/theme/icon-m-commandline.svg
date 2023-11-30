@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="64"
+   height="64"
+   viewBox="0 0 64 64"
+   style="enable-background:new 0 0 64 64;"
+   xml:space="preserve"
+   sodipodi:docname="icon-m-commandline.svg"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs24856" /><sodipodi:namedview
+   id="namedview24854"
+   pagecolor="#ffffff"
+   bordercolor="#111111"
+   borderopacity="1"
+   inkscape:pageshadow="0"
+   inkscape:pageopacity="0"
+   inkscape:pagecheckerboard="1"
+   showgrid="false"
+   inkscape:zoom="13.640625"
+   inkscape:cx="31.92669"
+   inkscape:cy="32"
+   inkscape:window-width="1271"
+   inkscape:window-height="1082"
+   inkscape:window-x="571"
+   inkscape:window-y="0"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="Layer_1" />
+<g
+   id="icon-m-device-portait_1_">
+	<rect
+   id="icon-m-device-portait"
+   style="opacity:0;fill:#FFFFFF;"
+   width="64"
+   height="64" />
+	<path
+   style="fill:#FFFFFF;"
+   d="M51.963,49H12.037C9.26,49,7,46.74,7,43.963V20.037C7,17.26,9.26,15,12.037,15h39.926   C54.74,15,57,17.26,57,20.037v23.926C57,46.74,54.74,49,51.963,49z M12.037,17C10.362,17,9,18.362,9,20.037v23.926   C9,45.638,10.362,47,12.037,47h39.926C53.638,47,55,45.638,55,43.963V20.037C55,18.362,53.638,17,51.963,17H12.037z"
+   id="path24846" />
+	<g
+   style="opacity:0.6"
+   id="g24850"
+   transform="matrix(1.173094,0,0,1,-5.9536413,0)">
+		<path
+   style="fill:#ffffff"
+   d="m 47.066,44.999 h -30 c -1.654,0 -3,-1.346 -3,-3 v -20 c 0,-1.654 1.346,-3 3,-3 h 30 c 1.654,0 3,1.346 3,3 v 20 c 0,1.654 -1.345,3 -3,3 z m -30,-24 c -0.551,0 -1,0.449 -1,1 v 20 c 0,0.552 0.449,1 1,1 h 30 c 0.552,0 1,-0.448 1,-1 v -20 c 0,-0.551 -0.448,-1 -1,-1 z"
+   id="path24848" />
+	</g>
+</g>
+<text
+   xml:space="preserve"
+   style="font-size:40px;line-height:1.25;font-family:Code-128;-inkscape-font-specification:Code-128"
+   x="14.296896"
+   y="34.85416"
+   id="text17846"><tspan
+     sodipodi:role="line"
+     id="tspan18100"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:21.3333px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1"
+     x="14.296896"
+     y="34.85416">&gt;_</tspan></text></svg>
+
