@@ -38,7 +38,7 @@ Item {
         truncationMode: TruncationMode.Fade
     }
 
-    Label {
+    Row {
         id: categories
         anchors.left: image.right
         anchors.leftMargin: Theme.paddingLarge
@@ -46,12 +46,27 @@ Item {
         anchors.rightMargin: Theme.paddingLarge
         anchors.top: title.bottom
         anchors.topMargin: visible ? _textMargin : 0
-        color: parent.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
-        font.pixelSize: Theme.fontSizeSmall
-        height: visible ? implicitHeight : 0
-        text: model.packageCategories.join(", ")
-        truncationMode: TruncationMode.Fade
-        visible: text
+        spacing: Theme.paddingMedium
+        property bool highlighted: parent.highlighted
+        property string catList: model.packageCategories.join(", ")
+        property bool isCli: (/ConsoleOnly/.test(catList) || (model.packageType === ChumPackage.PackageApplicationConsole))
+        visible: catList
+        Image {
+            visible: parent.isCli
+            //source: "image://theme/icon-m-commandline"
+            source: "image://theme/icon-m-keyboard" + "?" + ((Theme.colorScheme === Theme.LightOnDark) ? Theme.lightPrimaryColor : Theme.darkPrimaryColor)
+            height: cliLabel.height
+            fillMode: Image.PreserveAspectFit
+            anchors.bottom: parent.bottom
+        }
+        Label { id: cliLabel
+            color: parent.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
+            font.pixelSize: Theme.fontSizeSmall
+            height: visible ? implicitHeight : 0
+            truncationMode: TruncationMode.Fade
+            text: ( parent.isCli ?  "CLI, " : "" ) + parent.catList
+            anchors.bottom: parent.bottom
+        }
     }
 
     Label {
