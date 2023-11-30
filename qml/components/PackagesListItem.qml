@@ -53,8 +53,8 @@ Item {
         visible: catList
         Image {
             visible: parent.isCli
-            //source: "image://theme/icon-m-commandline"
-            source: "image://theme/icon-m-keyboard" + "?" + ((Theme.colorScheme === Theme.LightOnDark) ? Theme.lightPrimaryColor : Theme.darkPrimaryColor)
+            source: "image://theme/icon-m-commandline" + "?" + ((Theme.colorScheme === Theme.LightOnDark) ? Theme.lightPrimaryColor : Theme.darkPrimaryColor)
+            //source: "image://theme/icon-m-keyboard" + "?" + ((Theme.colorScheme === Theme.LightOnDark) ? Theme.lightPrimaryColor : Theme.darkPrimaryColor)
             height: cliLabel.height
             fillMode: Image.PreserveAspectFit
             anchors.bottom: parent.bottom
