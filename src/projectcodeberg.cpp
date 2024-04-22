@@ -81,7 +81,7 @@ bool ProjectForgejo::isProject(const QString &url) {
 }
 
 QNetworkReply* ProjectForgejo::sendQuery(const QString &type, const QString &path, const QVariant &payload)
-  QString reqAuth = QStringLiteral("Bearer %1").arg(m_token);
+  QString reqAuth = QStringLiteral("token %1").arg(m_token);
   QString reqUrl = QStringLiteral("https://%1/api/v1%2").arg(m_host).arg(path);
   QNetworkRequest request;
   request.setUrl(reqUrl);
