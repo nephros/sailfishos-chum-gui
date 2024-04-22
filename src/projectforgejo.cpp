@@ -140,7 +140,12 @@ void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
     QByteArray data = reply->readAll();
     QVariantList r = QJsonDocument::fromJson(data).array().toVariantList();
 
+    QVariantMap result = value->value();
+
     QVariantList rlist;
+    QVariant m0 = result["discussion"];
+    rlist.append(m0);
+
     for (const auto &e: r) {
       QVariantMap element = e.toMap();
       QVariantMap m;
@@ -151,7 +156,6 @@ void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
       rlist.append(m);
     }
 
-    QVariantMap result = value->value();
     result["discussion"] = rlist;
 
     value->setValue(issue_id, result);
@@ -175,15 +179,26 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     QVariantMap r = QJsonDocument::fromJson(data).object().toVariantMap();
 
     QVariantMap result;
-    result["id"] = r.value("number").toInt();
+    result["id"] = r.value("number").toInt(); // we have "id", but it's not used for requests
     result["number"] = r.value("number");
     result["title"] = r.value("title");
     result["commentsCount"] = r.value("commments").toInt();
 
+    // push the original issue description as the first comment:
+    QVariantList rlist;
+    QVariantMap m;
+    m["author"] = getName(r.value("user"));
+    m["created"] = parseDate(r.value("created_at").toString(), true);
+    m["updated"] = parseDate(r.value("updated_at").toString(), true);
+    m["body"] = r.value("body").toString();
+    rlist.append(m);
+
+    result["discussion"] = rlist;
+    value->setValue(issue_id, result);
+
     // load comments separately
     comments(result["id"].toString(), value);
 
-    value->setValue(issue_id, result);
     reply->deleteLater();
   });
 }
@@ -207,7 +222,7 @@ void ProjectForgejo::issues(LoadableObject *value) {
     for (const auto &e: r) {
       QVariantMap element = e.toMap();
       QVariantMap m;
-      m["id"] = element.value("number");
+      m["id"] = element.value("number"); // we have "id", but it's not used for requests
       m["author"] = getName(element.value("user"));
       m["commentsCount"] = element.value("comments");
       m["number"] = element.value("number");
