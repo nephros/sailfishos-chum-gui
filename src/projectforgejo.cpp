@@ -207,7 +207,7 @@ void ProjectForgejo::issues(LoadableObject *value) {
     for (const auto &e: r) {
       QVariantMap element = e.toMap();
       QVariantMap m;
-      m["id"] = element.value("id");
+      m["id"] = element.value("number");
       m["author"] = getName(element.value("user"));
       m["commentsCount"] = element.value("comments");
       m["number"] = element.value("number");
