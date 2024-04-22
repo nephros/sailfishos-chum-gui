@@ -178,10 +178,10 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     result["id"] = r.value("number").toInt();
     result["number"] = r.value("number");
     result["title"] = r.value("title");
-    result["commentsCount"] = r.value("commments").toString();
+    result["commentsCount"] = r.value("commments").toInt();
 
     // load comments separately
-    comments(result["id"], value);
+    comments(result["id"].toString(), value);
 
     value->setValue(issue_id, result);
     reply->deleteLater();
