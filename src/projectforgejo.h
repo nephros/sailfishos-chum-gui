@@ -23,7 +23,7 @@ public:
 signals:
 
 private:
-    QNetworkReply* sendQuery(const QString &type, const QString &path, const QVariant &payload);
+    QNetworkReply* sendQuery(const QString &type, const QString &path, const QString &payload);
     void fetchRepoInfo();
 
     static void initSites();
