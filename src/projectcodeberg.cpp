@@ -71,30 +71,18 @@ bool ProjectForgejo::isProject(const QString &url) {
   return s_sites.contains(h);
 }
 
-QNetworkReply* ProjectForgejo::sendQuery(const QString &type, const QString &path, const QString &payload) {
+QNetworkReply* ProjectForgejo::sendQuery(const QString &path) {
   QString reqAuth = QStringLiteral("token %1").arg(m_token);
   QString reqUrl = QStringLiteral("https://%1/api/v1%2").arg(m_host).arg(path);
   QNetworkRequest request;
   request.setUrl(reqUrl);
   request.setRawHeader("Content-Type", "application/json");
   request.setRawHeader("Authorization", reqAuth.toLocal8Bit());
-  if (type == QStringLiteral("GET")) {
-      return nMng->get(request);
-  } else  if (type == QStringLiteral("POST")) {
-      return nMng->post(request, payload.toLocal8Bit());
-  } else if (type == QStringLiteral("PUT")) {
-      return nMng->put(request, payload.toLocal8Bit());
-  } else {
-      qWarning() << "Forgejo: unhandled network request type:" << type;
-  }
+  return nMng->get(request);
 }
 
 void ProjectForgejo::fetchRepoInfo() {
-  QNetworkReply *reply = sendQuery(
-                  QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2").arg(m_path),
-                  ""
-                  );
+  QNetworkReply *reply = sendQuery(QStringLiteral("/repos/%1/%2").arg(m_path));
   connect(reply, &QNetworkReply::finished, this, [this, reply](){
     if (reply->error() != QNetworkReply::NoError) {
       qWarning() << "Forgejo: Failed to fetch repository data for Forgejo" << this->m_path;
@@ -128,11 +116,7 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     return; // value already corresponds to that release
   value->reset(issue_id);
 
-  QNetworkReply *reply = sendQuery(
-                  QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/issues/%2").arg(m_path).arg(issue_id),
-                  ""
-                  );
+  QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/issues/%2").arg(m_path).arg(issue_id));
   connect(reply, &QNetworkReply::finished, this, [this, issue_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
       qWarning() << "Forgejo: Failed to fetch issue for" << this->m_path;
@@ -177,14 +161,10 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
 
 
 void ProjectForgejo::issues(LoadableObject *value) {
-  const QString issues_id{QStringLiteral("issues")}; // huh?
+  const QString issues_id{QStringLiteral("issues")};
   value->reset(issues_id);
 
-  QNetworkReply *reply = sendQuery(
-                  QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2?state=open&type=issue").arg(m_path).arg(issues_id), // ok lets use that
-                  ""
-                  );
+  QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/%2?state=open&type=issue").arg(m_path).arg(issues_id));
 
   connect(reply, &QNetworkReply::finished, this, [this, issues_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
@@ -223,11 +203,7 @@ void ProjectForgejo::release(const QString &release_id, LoadableObject *value) {
     return; // value already corresponds to that release
   value->reset(release_id);
 
-  QNetworkReply *reply = sendQuery(
-                  QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/release/%2").arg(m_path).arg(release_id),
-                  ""
-                  );
+  QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/release/%2").arg(m_path).arg(release_id));
 
   connect(reply, &QNetworkReply::finished, this, [this, release_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
@@ -250,14 +226,10 @@ void ProjectForgejo::release(const QString &release_id, LoadableObject *value) {
 
 
 void ProjectForgejo::releases(LoadableObject *value) {
-  const QString releases_id{QStringLiteral("releases")}; // huh? II
+  const QString releases_id{QStringLiteral("releases")};
   value->reset(releases_id);
 
-  QNetworkReply *reply = sendQuery(
-                  QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2?pre-release=true").arg(m_path).arg(releases_id), // well lets use it II
-                  ""
-                  );
+  QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/%2?pre-release=true").arg(m_path).arg(releases_id));
 
   connect(reply, &QNetworkReply::finished, this, [this, releases_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
