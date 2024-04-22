@@ -189,7 +189,7 @@ void ProjectForgejo::issues(LoadableObject *value) {
 
   QNetworkReply *reply = sendQuery(
                   QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2").arg(m_path).arg(issue_id) // ok lets use that
+                  QStringLiteral("/repos/%1/%2?state=open&type=issue").arg(m_path).arg(issue_id) // ok lets use that
                   );
 
   connect(reply, &QNetworkReply::finished, this, [this, issues_id, reply, value](){
@@ -260,7 +260,7 @@ void ProjectForgejo::releases(LoadableObject *value) {
 
   QNetworkReply *reply = sendQuery(
                   QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2").arg(m_path).arg(release_id) // well lets use it II
+                  QStringLiteral("/repos/%1/%2?pre-release=true").arg(m_path).arg(release_id) // well lets use it II
                   );
 
   connect(reply, &QNetworkReply::finished, this, [this, releases_id, reply, value](){
