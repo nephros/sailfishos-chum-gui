@@ -151,7 +151,7 @@ void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
       rlist.append(m);
     }
 
-    QVariantMap result;
+    QVariantMap result = value->value();
     result["discussion"] = rlist;
 
     value->setValue(issue_id, result);
