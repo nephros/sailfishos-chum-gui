@@ -130,7 +130,6 @@ void ProjectForgejo::fetchRepoInfo() {
 }
 
 void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
-
   QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/issues/%2/comments").arg(m_path).arg(issue_id));
   connect(reply, &QNetworkReply::finished, this, [this, issue_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
@@ -139,19 +138,21 @@ void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
     }
 
     QByteArray data = reply->readAll();
-    QVariantMap r = QJsonDocument::fromJson(data).object().toVariantMap();
+    QVariantList r = QJsonDocument::fromJson(data).array().toVariantList();
+
+    QVariantList rlist;
+    for (const auto &e: r) {
+      QVariantMap element = e.toMap();
+      QVariantMap m;
+      m["author"] = getName(element.value("user"));
+      m["created"] = parseDate(element.value("created_at").toString(), true);
+      m["updated"] = parseDate(element.value("updated_at").toString(), true);
+      m["body"] = element.value("body").toString();
+      rlist.append(m);
+    }
 
     QVariantMap result;
-    QVariantList result_list;
-
-    QVariantMap m;
-    m["author"] = getName(r.value("user"));
-    m["created"] = parseDate(r.value("created_at").toString(), true);
-    m["updated"] = parseDate(r.value("updated_at").toString(), true);
-    m["body"] = r.value("body").toString();
-    result_list.append(m);
-
-    result["discussion"] = result_list;
+    result["discussion"] = rlist;
 
     value->setValue(issue_id, result);
     reply->deleteLater();
@@ -174,14 +175,13 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     QVariantMap r = QJsonDocument::fromJson(data).object().toVariantMap();
 
     QVariantMap result;
-    result["id"] = r.value("number");
+    result["id"] = r.value("number").toInt();
     result["number"] = r.value("number");
     result["title"] = r.value("title");
-    QVariantList result_list;
-    result["commentsCount"] = r.value("commments").toString();
+    result["commentsCount"] = r.value("commments").toInt();
 
     // load comments separately
-    comments(r.value("number").toInt(), value);
+    comments(result["id"].toString(), value);
 
     value->setValue(issue_id, result);
     reply->deleteLater();
