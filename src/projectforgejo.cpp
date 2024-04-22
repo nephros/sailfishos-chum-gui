@@ -129,11 +129,42 @@ void ProjectForgejo::fetchRepoInfo() {
   });
 }
 
+void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
+
+  QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/issues/%2/comments").arg(m_path).arg(issue_id));
+  connect(reply, &QNetworkReply::finished, this, [this, issue_id, reply, value](){
+    if (reply->error() != QNetworkReply::NoError) {
+      qWarning() << "Forgejo: Failed to fetch issue for" << this->m_path;
+      qWarning() << "Forgejo: Error: " << reply->errorString();
+    }
+
+    QByteArray data = reply->readAll();
+    QVariantMap r = QJsonDocument::fromJson(data).object().toVariantMap();
+
+    QVariantMap result;
+    QVariantList result_list;
+
+    QVariantMap m;
+    m["author"] = getName(r.value("user"));
+    m["created"] = parseDate(r.value("created_at").toString(), true);
+    m["updated"] = parseDate(r.value("updated_at").toString(), true);
+    m["body"] = r.value("body").toString();
+    result_list.append(m);
+
+    result["discussion"] = result_list;
+
+    value->setValue(issue_id, result);
+    reply->deleteLater();
+  });
+}
 
 void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
   if (value->ready() && value->valueId()==issue_id)
-    return; // value already corresponds to that release
+    return; // value already corresponds to that issue
   value->reset(issue_id);
+
+  // load comments separately
+  comments(issue_id, value);
 
   QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/issues/%2").arg(m_path).arg(issue_id));
   connect(reply, &QNetworkReply::finished, this, [this, issue_id, reply, value](){
@@ -146,38 +177,16 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     QVariantMap r = QJsonDocument::fromJson(data).object().toVariantMap();
 
     QVariantMap result;
-    result["id"] = r.value("id");
+    result["id"] = r.value("number");
     result["number"] = r.value("number");
     result["title"] = r.value("title");
-    //QVariantList clist = r.value("notes").toMap().value("nodes").toList();
     QVariantList result_list;
-    //result["commentsCount"] = clist.size();
     result["commentsCount"] = r.value("commments").toString();
-    QVariantMap m;
-    m["author"] = getName(r.value("user"));
-    m["created"] = parseDate(r.value("created_at").toString(), true);
-    m["updated"] = parseDate(r.value("updated_at").toString(), true);
-    m["body"] = r.value("body").toString();
-    result_list.append(m);
-    /*
-    // iterate in reverse as gitlab returns notes in reverse order
-    for (auto e=clist.rbegin(); e!=clist.rend(); ++e) {
-      QVariantMap element = e->toMap();
-      m.clear();
-      m["author"] = getName(element.value("author"));
-      m["created"] = parseDate(element.value("createdAt").toString(), true);
-      m["updated"] = parseDate(element.value("updatedAt").toString(), true);
-      m["body"] = element.value("bodyHtml").toString();
-      result_list.append(m);
-    }
 
-    result["discussion"] = result_list;
-    */
     value->setValue(issue_id, result);
     reply->deleteLater();
   });
 }
-
 
 void ProjectForgejo::issues(LoadableObject *value) {
   const QString issues_id{QStringLiteral("issues")};

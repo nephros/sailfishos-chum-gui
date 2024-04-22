@@ -28,6 +28,7 @@ private:
 
     static void initSites();
 
+    void comments(const QString &id, LoadableObject *value);
 private:
     QString m_host;
     QString m_path;
