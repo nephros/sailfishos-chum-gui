@@ -101,7 +101,17 @@ void ProjectForgejo::fetchRepoInfo() {
     QByteArray data = reply->readAll();
     QJsonObject r = QJsonDocument::fromJson(data).object();
 
+    QString v;
     int vi;
+
+    v = r.value("owner").toObject().value("login").toString();
+    if (!v.isEmpty()) m_package->setDeveloperLogin(v);
+
+    v = r.value("owner").toObject().value("full_name").toString();
+    if (!v.isEmpty()) m_package->setDeveloperName(v);
+
+    v = r.value("website").toString();
+    if (!v.isEmpty()) m_package->setUrl(v);
 
     vi = r.value("stars_count").toInt(-1);
     if (vi>=0) m_package->setStarsCount(vi);
