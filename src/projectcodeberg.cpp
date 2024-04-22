@@ -20,15 +20,6 @@ QMap<QString, QString> ProjectForgejo::s_sites;
 //////////////////////////////////////////////////////
 /// helper functions
 
-static QString getName(const QVariant &v) {
-  QVariantMap m = v.toMap();
-  QString login = m[QLatin1String("username")].toString();
-  QString name = m[QLatin1String("name")].toString();
-  if (login.isEmpty() || name==login) return name;
-  if (name.isEmpty()) return login;
-  return QStringLiteral("%1 (%2)").arg(name, login);
-}
-
 static void parseUrl(const QString &u, QString &h, QString &path) {
   QUrl url(u);
   h = url.host();
@@ -80,7 +71,7 @@ bool ProjectForgejo::isProject(const QString &url) {
   return s_sites.contains(h);
 }
 
-QNetworkReply* ProjectForgejo::sendQuery(const QString &type, const QString &path, const QVariant &payload)
+QNetworkReply* ProjectForgejo::sendQuery(const QString &type, const QString &path, const QVariant &payload) {
   QString reqAuth = QStringLiteral("token %1").arg(m_token);
   QString reqUrl = QStringLiteral("https://%1/api/v1%2").arg(m_host).arg(path);
   QNetworkRequest request;
@@ -158,7 +149,7 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     //result["commentsCount"] = clist.size();
     result["commentsCount"] = r.value("commments").toString();
     QVariantMap m;
-    m["author"] = getName(r.value("original_author"));
+    m["author"] = r.value("original_author");
     m["created"] = parseDate(r.value("created_at").toString(), true);
     m["updated"] = parseDate(r.value("updated_at").toString(), true);
     m["body"] = r.value("body").toString();
@@ -206,7 +197,7 @@ void ProjectForgejo::issues(LoadableObject *value) {
       QVariantMap element = e.toMap();
       QVariantMap m;
       m["id"] = element.value("id");
-      m["author"] = getName(element.value("author"));
+      m["author"] = element.value("author");
       m["commentsCount"] = element.value("comments");
       m["number"] = element.value("number");
       m["title"] = element.value("title");
