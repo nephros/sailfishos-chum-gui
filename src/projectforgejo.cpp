@@ -163,9 +163,6 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     return; // value already corresponds to that issue
   value->reset(issue_id);
 
-  // load comments separately
-  comments(issue_id, value);
-
   QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/issues/%2").arg(m_path).arg(issue_id));
   connect(reply, &QNetworkReply::finished, this, [this, issue_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
@@ -182,6 +179,9 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     result["title"] = r.value("title");
     QVariantList result_list;
     result["commentsCount"] = r.value("commments").toString();
+
+    // load comments separately
+    comments(r.value("number").toInt(), value);
 
     value->setValue(issue_id, result);
     reply->deleteLater();
