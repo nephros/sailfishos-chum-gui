@@ -82,7 +82,7 @@ QNetworkReply* ProjectForgejo::sendQuery(const QString &query) {
 }
 
 void ProjectForgejo::fetchRepoInfo() {
-  QNetworkReply *reply = sendQuery(QStringLiteral("/repos/%1/%2").arg(m_path));
+  QNetworkReply *reply = sendQuery(QStringLiteral("/repos/%1").arg(m_path));
   connect(reply, &QNetworkReply::finished, this, [this, reply](){
     if (reply->error() != QNetworkReply::NoError) {
       qWarning() << "Forgejo: Failed to fetch repository data for Forgejo" << this->m_path;
