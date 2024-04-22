@@ -13,6 +13,8 @@ add_executable(${PROJECT_NAME}
   projectgithub.h
   projectgitlab.cpp
   projectgitlab.h
+  projectsourceforge.cpp
+  projectsourceforge.h
   ssu.cpp
   ssu.h
   main.cpp
