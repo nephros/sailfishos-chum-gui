@@ -212,7 +212,7 @@ void ProjectForgejo::release(const QString &release_id, LoadableObject *value) {
     return; // value already corresponds to that release
   value->reset(release_id);
 
-  QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/release/%2").arg(m_path).arg(release_id));
+  QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/releases/%2").arg(m_path).arg(release_id));
 
   connect(reply, &QNetworkReply::finished, this, [this, release_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
