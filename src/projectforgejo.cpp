@@ -23,7 +23,7 @@ QMap<QString, QString> ProjectForgejo::s_sites;
 static QString getName(const QVariant &v) {
   QVariantMap m = v.toMap();
   QString login = m[QLatin1String("username")].toString();
-  QString name = m[QLatin1String("name")].toString();
+  QString name = m[QLatin1String("full_name")].toString();
   if (login.isEmpty() || name==login) return name;
   if (name.isEmpty()) return login;
   return QStringLiteral("%1 (%2)").arg(name, login);
@@ -144,7 +144,7 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     //result["commentsCount"] = clist.size();
     result["commentsCount"] = r.value("commments").toString();
     QVariantMap m;
-    m["author"] = getName(r.value("original_author"));
+    m["author"] = getName(r.value("user"));
     m["created"] = parseDate(r.value("created_at").toString(), true);
     m["updated"] = parseDate(r.value("updated_at").toString(), true);
     m["body"] = r.value("body").toString();
@@ -189,7 +189,7 @@ void ProjectForgejo::issues(LoadableObject *value) {
       QVariantMap element = e.toMap();
       QVariantMap m;
       m["id"] = element.value("id");
-      m["author"] = getName(element.value("author"));
+      m["author"] = getName(element.value("user"));
       m["commentsCount"] = element.value("comments");
       m["number"] = element.value("number");
       m["title"] = element.value("title");
