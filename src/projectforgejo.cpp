@@ -253,7 +253,7 @@ void ProjectForgejo::releases(LoadableObject *value) {
     for (const auto &e: r) {
       QVariantMap element = e.toMap();
       QVariantMap m;
-      m["id"] = element.value("tag_name");
+      m["id"] = element.value("id");
       m["name"] = element.value("name");
       m["datetime"] = parseDate(element.value("created_at").toString());
       rlist.append(m);
