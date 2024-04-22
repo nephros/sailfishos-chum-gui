@@ -71,9 +71,9 @@ bool ProjectForgejo::isProject(const QString &url) {
   return s_sites.contains(h);
 }
 
-QNetworkReply* ProjectForgejo::sendQuery(const QString &path) {
+QNetworkReply* ProjectForgejo::sendQuery(const QString &query) {
   QString reqAuth = QStringLiteral("token %1").arg(m_token);
-  QString reqUrl = QStringLiteral("https://%1/api/v1%2").arg(m_host).arg(path);
+  QString reqUrl = QStringLiteral("https://%1/api/v1%2").arg(m_host).arg(query);
   QNetworkRequest request;
   request.setUrl(reqUrl);
   request.setRawHeader("Content-Type", "application/json");
