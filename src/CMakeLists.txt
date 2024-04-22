@@ -10,7 +10,7 @@ add_executable(${PROJECT_NAME}
   projectabstract.cpp
   projectabstract.h
   projectforgejo.h
-  projectcodeberg.cpp
+  projectforgejo.cpp
   projectgithub.cpp
   projectgithub.h
   projectgitlab.cpp
@@ -42,8 +42,8 @@ set_source_files_properties(projectgitlab.cpp PROPERTIES
   COMPILE_DEFINITIONS GITLAB_TOKEN=\"${GITLAB_TOKEN}\"
 )
 
-set_source_files_properties(projectcodeberg.cpp PROPERTIES
-		COMPILE_DEFINITIONS FORGEJO_TOKEN=\"${CODEBERG_TOKEN}\"
+set_source_files_properties(projectforgejo.cpp PROPERTIES
+  COMPILE_DEFINITIONS FORGEJO_TOKEN=\"${FORGEJO_TOKEN}\"
 )
 
 target_link_libraries(${PROJECT_NAME}
