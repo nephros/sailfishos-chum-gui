@@ -71,7 +71,7 @@ bool ProjectForgejo::isProject(const QString &url) {
   return s_sites.contains(h);
 }
 
-QNetworkReply* ProjectForgejo::sendQuery(const QString &type, const QString &path, const QVariant &payload) {
+QNetworkReply* ProjectForgejo::sendQuery(const QString &type, const QString &path, const QString &payload) {
   QString reqAuth = QStringLiteral("token %1").arg(m_token);
   QString reqUrl = QStringLiteral("https://%1/api/v1%2").arg(m_host).arg(path);
   QNetworkRequest request;
@@ -92,7 +92,8 @@ QNetworkReply* ProjectForgejo::sendQuery(const QString &type, const QString &pat
 void ProjectForgejo::fetchRepoInfo() {
   QNetworkReply *reply = sendQuery(
                   QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2").arg(m_path)
+                  QStringLiteral("/repos/%1/%2").arg(m_path),
+                  ""
                   );
   connect(reply, &QNetworkReply::finished, this, [this, reply](){
     if (reply->error() != QNetworkReply::NoError) {
@@ -101,7 +102,7 @@ void ProjectForgejo::fetchRepoInfo() {
     }
 
     QByteArray data = reply->readAll();
-    QJsonObject r{QJsonDocument::fromJson(data).object()};
+    QJsonObject r = QJsonDocument::fromJson(data).object();
 
     int vi;
 
@@ -129,7 +130,8 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
 
   QNetworkReply *reply = sendQuery(
                   QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/issues/%2").arg(m_path).arg(issue_id)
+                  QStringLiteral("/repos/%1/issues/%2").arg(m_path).arg(issue_id),
+                  ""
                   );
   connect(reply, &QNetworkReply::finished, this, [this, issue_id, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
@@ -138,14 +140,14 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     }
 
     QByteArray data = reply->readAll();
-    QVariantMap r = QJsonDocument::fromJson(data).object();
+    QVariantMap r = QJsonDocument::fromJson(data).object().toVariantMap();
 
     QVariantMap result;
     result["id"] = r.value("id");
     result["number"] = r.value("number");
     result["title"] = r.value("title");
     //QVariantList clist = r.value("notes").toMap().value("nodes").toList();
-    //QVariantList result_list;
+    QVariantList result_list;
     //result["commentsCount"] = clist.size();
     result["commentsCount"] = r.value("commments").toString();
     QVariantMap m;
@@ -180,7 +182,8 @@ void ProjectForgejo::issues(LoadableObject *value) {
 
   QNetworkReply *reply = sendQuery(
                   QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2?state=open&type=issue").arg(m_path).arg(issue_id) // ok lets use that
+                  QStringLiteral("/repos/%1/%2?state=open&type=issue").arg(m_path).arg(issues_id), // ok lets use that
+                  ""
                   );
 
   connect(reply, &QNetworkReply::finished, this, [this, issues_id, reply, value](){
@@ -190,7 +193,7 @@ void ProjectForgejo::issues(LoadableObject *value) {
     }
 
     QByteArray data = reply->readAll();
-    QVariantList r = QJsonDocument::fromJson(data).object().toArray().toVariantList();
+    QVariantList r = QJsonDocument::fromJson(data).array().toVariantList();
 
     QVariantList rlist;
     for (const auto &e: r) {
@@ -222,7 +225,8 @@ void ProjectForgejo::release(const QString &release_id, LoadableObject *value) {
 
   QNetworkReply *reply = sendQuery(
                   QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/release/%2").arg(m_path).arg(release_id)
+                  QStringLiteral("/repos/%1/release/%2").arg(m_path).arg(release_id),
+                  ""
                   );
 
   connect(reply, &QNetworkReply::finished, this, [this, release_id, reply, value](){
@@ -232,7 +236,7 @@ void ProjectForgejo::release(const QString &release_id, LoadableObject *value) {
     }
 
     QByteArray data = reply->readAll();
-    QVariantMap r = QJsonDocument::fromJson(data).object().toObject().toVariantMap();
+    QVariantMap r = QJsonDocument::fromJson(data).object().toVariantMap();
 
     QVariantMap result;
     result["name"] = r.value("name");
@@ -251,7 +255,8 @@ void ProjectForgejo::releases(LoadableObject *value) {
 
   QNetworkReply *reply = sendQuery(
                   QStringLiteral("GET"),
-                  QStringLiteral("/repos/%1/%2?pre-release=true").arg(m_path).arg(release_id) // well lets use it II
+                  QStringLiteral("/repos/%1/%2?pre-release=true").arg(m_path).arg(releases_id), // well lets use it II
+                  ""
                   );
 
   connect(reply, &QNetworkReply::finished, this, [this, releases_id, reply, value](){
@@ -261,7 +266,7 @@ void ProjectForgejo::releases(LoadableObject *value) {
     }
 
     QByteArray data = reply->readAll();
-    QVariantList r = QJsonDocument::fromJson(data).object().toArray().toVariantList();
+    QVariantList r = QJsonDocument::fromJson(data).array().toVariantList();
 
     QVariantList rlist;
     for (const auto &e: r) {
