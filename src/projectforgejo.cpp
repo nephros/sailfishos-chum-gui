@@ -179,15 +179,15 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     result["id"] = r.value("number").toInt();
     result["number"] = r.value("number");
     result["title"] = r.value("title");
-    result["commentsCount"] = r.value("commments").toInt();
+    result["commentsCount"] = r.value("comments").toInt();
 
     value->setValue(issue_id, result);
 
     // load comments separately: save "first comment"
     QVariantMap commentZero;
     commentZero["author"] = getName(r.value("user"));
-    commentZero["created"] = parseDate(r.value("createdAt").toString(), true);
-    commentZero["updated"] = parseDate(r.value("updatedAt").toString(), true);
+    commentZero["created"] = parseDate(r.value("created_at").toString(), true);
+    commentZero["updated"] = parseDate(r.value("updated_at").toString(), true);
     // FIXME: this is stored as markdown, not HTML
     //        maybe use /miscellaneous/renderMarkdown to get HTML
     commentZero["body"] = r.value("body").toString();
