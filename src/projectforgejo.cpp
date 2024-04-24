@@ -129,9 +129,9 @@ void ProjectForgejo::fetchRepoInfo() {
   });
 }
 
-void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
+void ProjectForgejo::comments(const QString &issue_id, const QVariantMap &comment, LoadableObject *value) {
   QNetworkReply *reply = sendQuery( QStringLiteral("/repos/%1/issues/%2/comments").arg(m_path).arg(issue_id));
-  connect(reply, &QNetworkReply::finished, this, [this, issue_id, reply, value](){
+  connect(reply, &QNetworkReply::finished, this, [this, issue_id, comment, reply, value](){
     if (reply->error() != QNetworkReply::NoError) {
       qWarning() << "Forgejo: Failed to fetch issue for" << this->m_path;
       qWarning() << "Forgejo: Error: " << reply->errorString();
@@ -141,6 +141,7 @@ void ProjectForgejo::comments(const QString &issue_id, LoadableObject *value) {
     QVariantList r = QJsonDocument::fromJson(data).array().toVariantList();
 
     QVariantList rlist;
+    rlist.append(comment); // add issue comment as first comment
     for (const auto &e: r) {
       QVariantMap element = e.toMap();
       QVariantMap m;
@@ -180,10 +181,20 @@ void ProjectForgejo::issue(const QString &issue_id, LoadableObject *value) {
     result["title"] = r.value("title");
     result["commentsCount"] = r.value("commments").toInt();
 
-    // load comments separately
-    comments(result["id"].toString(), value);
-
     value->setValue(issue_id, result);
+
+    // load comments separately: save "first comment"
+    QVariantMap commentZero;
+    commentZero["author"] = getName(r.value("user"));
+    commentZero["created"] = parseDate(r.value("createdAt").toString(), true);
+    commentZero["updated"] = parseDate(r.value("updatedAt").toString(), true);
+    // FIXME: this is stored as markdown, not HTML
+    //        maybe use /miscellaneous/renderMarkdown to get HTML
+    commentZero["body"] = r.value("body").toString();
+
+    // load comments
+    comments(result["id"].toString(), commentZero, value);
+
     reply->deleteLater();
   });
 }

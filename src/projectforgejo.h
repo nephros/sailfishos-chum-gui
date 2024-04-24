@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkReply>
 #include <QString>
+#include <QVariantMap>
 
 #include "projectabstract.h"
 
@@ -28,7 +29,7 @@ private:
 
     static void initSites();
 
-    void comments(const QString &id, LoadableObject *value);
+    void comments(const QString &id, const QVariantMap &comment, LoadableObject *value);
 private:
     QString m_host;
     QString m_path;
