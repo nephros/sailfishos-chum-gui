@@ -104,7 +104,7 @@ void ChumPackagesModel::reset() {
             // nothing, lets try without boundaries
             if (!found) {
                 QRegExp orsre(ors);
-                found = found && orsre.indexIn(txt)
+                found = found && orsre.indexIn(txt);
             }
             /*
             // nothing, lets try a simple match
