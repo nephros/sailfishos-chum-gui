@@ -95,16 +95,19 @@ void ChumPackagesModel::reset() {
                         p->developer(),
                         p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
-            /*
-            for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                query = query.normalized(QString::NormalizationForm_KC).toLower();
-                found = found && txt.contains(query);
-            }
-            */
-            QString ors =  QRegExp::escape(m_search.replace(QRegExp('\\w+'), '|'));
+
+            // try beginning-of-word and end-of-word first
+            QString ors =  QRegExp::escape(m_search.replace(QRegExp('\\W+'), '|'));
             QRegExp begre( '\\b(' + ors + ')');
             QRegExp endre( '('    + ors + ')\\b');
-            found = begre.exactMatch(txt) || endre.exactMatch(txt);
+            found = found && (begre.exactMatch(txt) || endre.exactMatch(txt));
+            // nothing, lets try a simple match
+            if (!found) {
+                for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
+                    query = query.normalized(QString::NormalizationForm_KC).toLower();
+                    found = found && txt.contains(query);
+                }
+            }
             if (!found) continue;
         }
 
