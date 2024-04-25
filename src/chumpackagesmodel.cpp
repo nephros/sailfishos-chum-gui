@@ -97,9 +97,9 @@ void ChumPackagesModel::reset() {
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
 
             // try beginning-of-word and end-of-word first
-            QString ors =  QRegExp::escape(m_search.replace(QRegExp('\\W+'), '|'));
-            QRegExp begre( '\\b(' + ors + ')');
-            QRegExp endre( '('    + ors + ')\\b');
+            QString ors =  QRegExp::escape(m_search.replace(QRegExp("\\W+"), "|"));
+            QRegExp begre( "\\b(" + ors + ")");
+            QRegExp endre( "("    + ors + ")\\b");
             found = found && (begre.indexIn(txt) || endre.indexIn(txt));
             // nothing, lets try without boundaries
             if (!found) {
