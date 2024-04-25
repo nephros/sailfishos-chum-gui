@@ -100,7 +100,13 @@ void ChumPackagesModel::reset() {
             QString ors =  QRegExp::escape(m_search.replace(QRegExp('\\W+'), '|'));
             QRegExp begre( '\\b(' + ors + ')');
             QRegExp endre( '('    + ors + ')\\b');
-            found = found && (begre.exactMatch(txt) || endre.exactMatch(txt));
+            found = found && (begre.indexIn(txt) || endre.indexIn(txt));
+            // nothing, lets try without boundaries
+            if (!found) {
+                QRegExp orsre(ors);
+                found = found && orsre.indexIn(txt)
+            }
+            /*
             // nothing, lets try a simple match
             if (!found) {
                 for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
@@ -108,6 +114,7 @@ void ChumPackagesModel::reset() {
                     found = found && txt.contains(query);
                 }
             }
+            */
             if (!found) continue;
         }
 
