@@ -100,10 +100,10 @@ void ChumPackagesModel::reset() {
 
             qDebug() << "Searching for" << m_search << "in" << p->name();
             // try beginning-of-word and end-of-word first
-            //QString ors =  "(" + QRegExp::escape(m_search.replace(QRegExp(R"(\W+)"), "|")) + ")";
-            //QRegExp begre(R"(\b)" + ors);
-            //QRegExp endre(ors + R"(\b)");
-            //QRegExp orsre(ors);
+            //QString ors =  "(" + QRegularExpression::escape(m_search.replace(QRegularExpression(R"(\W+)"), "|")) + ")";
+            //QRegularExpression begre(R"(\b)" + ors);
+            //QRegularExpression endre(ors + R"(\b)");
+            //QRegularExpression orsre(ors);
             //qDebug() << "Searching for" << m_search << "in" << p->name() << "re:" << ors;
             //if (begre.indexIn(txt) != -1)
             //    qDebug() << "Bounded begin version match!";
@@ -137,13 +137,18 @@ void ChumPackagesModel::reset() {
                 matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
                 if (matcher.indexIn(txt) != -1)
                     qDebug() << "New version match!";
-                QRegExp re(query);
-                if (re.exactMatch(txt))
-                    qDebug() << "Exact word match!";
-                re = QRegExp(R"(\b)" + query);
-                if (re.exactMatch(txt))
-                    qDebug() << "Word beginning match!";
                 found = found && (matcher.indexIn(txt) != -1);
+
+                QRegularExpression re;
+                re.setPatternOptions(
+                    QRegularExpression::MultilineOption |
+                    QRegularExpression::CaseInsensitiveOption
+                );
+                for ( QString pat: { query, R"(\b)" + query}) {
+                re.setPattern(pat)
+                if (re.match(txt).hasMatch())
+                    qDebug() << "Exact word match using!" << re.pattern();
+                }
             }
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 query = query.normalized(QString::NormalizationForm_KC).toLower();
