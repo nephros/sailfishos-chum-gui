@@ -98,7 +98,7 @@ void ChumPackagesModel::reset() {
                         p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
 
-            qDebug() << "Searching for" << m_query << "in" << p->name();
+            qDebug() << "Searching for" << m_search << "in" << p->name();
             // try beginning-of-word and end-of-word first
             QString ors =  QRegExp::escape(m_search.replace(QRegExp("\\W+"), "|"));
             qDebug() << "Looking for re:" << ors << "with word boundary";
@@ -107,8 +107,8 @@ void ChumPackagesModel::reset() {
             QRegExp orsre(ors);
             qDebug() << "Bounded begin version match:" << (begre.indexIn(txt) != -1);
             qDebug() << "Bounded end version match:" << (endre.indexIn(txt) != -1);
-            qDebug() << "Unbounded version match:" << (ors.indexIn(txt) != -1);
-            qDebug() << "Exact version match:" << ors.exactMatch(txt);
+            qDebug() << "Unbounded version match:" << (orsre.indexIn(txt) != -1);
+            qDebug() << "Exact version match:" << orsre.exactMatch(txt);
             //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
             //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
             // nothing, lets try without boundaries
