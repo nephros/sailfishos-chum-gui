@@ -110,12 +110,15 @@ void ChumPackagesModel::reset() {
                 // not found, try word boundary stuff:
                 QStringMatcher matcher("", Qt::CaseInsensitive);
                 for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
+                    /*  */
                     for ( QString pat: { "\\b" + query, query + "\\b"}) {
                         re.setPattern(pat);
-                        found = found && re.match(txt).hasMatch();
+                        //found = found && re.match(txt).hasMatch();
+                        found = re.match(txt).hasMatch();
                         if (re.match(txt).hasMatch()) {
                             qDebug() << "Exact word matching" << p->name() << " using" << re.pattern();
                         }
+                        if (found) break;
                     }
                     // fall back to 'contains' search
                     if (!found) {
