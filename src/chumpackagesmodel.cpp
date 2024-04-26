@@ -2,6 +2,7 @@
 #include "chum.h"
 
 #include <QDebug>
+#include <QStringMatcher>
 
 #include <algorithm>
 
@@ -89,6 +90,7 @@ void ChumPackagesModel::reset() {
             continue;
         if (!m_search.isEmpty()) {
             bool found = true;
+            QStringMatcher matcher("", Qt::CaseInsensitive);
             QStringList lines{ p->name(),
                         p->summary(),
                         p->categories().join(' '),
@@ -96,21 +98,27 @@ void ChumPackagesModel::reset() {
                         p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
 
+            /*
             // try beginning-of-word and end-of-word first
             QString ors =  QRegExp::escape(m_search.replace(QRegExp("\\W+"), "|"));
             qDebug() << "Looking for re:" << ors << "with word boundary";
             QRegExp begre( "\\b(" + ors + ")");
             QRegExp endre( "("    + ors + ")\\b");
             found = found && (begre.indexIn(txt) || endre.indexIn(txt));
+            if (found) {
+                qDebug() << "Match:" begre.capturedTexts() ;
+                qDebug() << "Match:" endre.capturedTexts() ;
+            }
             // nothing, lets try without boundaries
             if (!found) {
                 qDebug() << "Nothing, Looking for re:" << ors;
                 QRegExp orsre(ors);
                 found = found && orsre.indexIn(txt);
+                if (found) {
+                    qDebug() << "Match:" orsre.capturedTexts() ;
+                }
             }
-            if (found) {
-                qDebug() << "Match!";
-            }
+            */
             /*
             // nothing, lets try a simple match
             if (!found) {
@@ -120,6 +128,10 @@ void ChumPackagesModel::reset() {
                 }
             }
             */
+            for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
+                matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
+                found = found && (matcher.indexIn(txt) != -1);
+            }
             if (!found) continue;
         }
 
