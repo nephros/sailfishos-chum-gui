@@ -91,7 +91,6 @@ void ChumPackagesModel::reset() {
             continue;
         if (!m_search.isEmpty()) {
             bool found = true;
-            QStringMatcher matcher("", Qt::CaseInsensitive);
             QStringList lines{ p->name(),
                         p->summary(),
                         p->categories().join(' '),
@@ -102,28 +101,30 @@ void ChumPackagesModel::reset() {
             QRegularExpression re;
             re.setPatternOptions( QRegularExpression::MultilineOption | QRegularExpression::CaseInsensitiveOption);
             // first, try an all words match:
-            QString all =  "(" + QRegularExpression::escape(m_search.replace(QRegularExpression("\\s+"), "|")) + ")";
+            // construct the pattern "(word1|word1|word1)" 
+            QString all =  "(" + QRegularExpression::escape( m_search.split(' ', QString::SkipEmptyParts).join('|') ) + ")";
             re.setPattern(all);
-            found = found && re.match(txt).hasMatch();
+            found = re.match(txt).hasMatch();
+            if (found) break;
+
             // not found, try word boundary stuff:
-            if (!found) {
-                for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                    for ( QString pat: { "\\b" + query, query + "\\b", query}) {
-                        re.setPattern(pat);
-                        found = found && re.match(txt).hasMatch();
-                        if (re.match(txt).hasMatch()) {
-                            qDebug() << "Exact word matching" << p->name() << " using" << re.pattern();
-                        }
-                        if (found) break;
+            QStringMatcher matcher("", Qt::CaseInsensitive);
+            for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
+                for ( QString pat: { "\\b" + query, query + "\\b"}) {
+                    re.setPattern(pat);
+                    found = found && re.match(txt).hasMatch();
+                    if (re.match(txt).hasMatch()) {
+                        qDebug() << "Exact word matching" << p->name() << " using" << re.pattern();
+                        break;
                     }
-                    // fall back to 'simple' search
-                    if (!found) {
-                        matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
-                        if (matcher.indexIn(txt) != -1)
-                            qDebug() << "Simple version match!";
-                        found = found && (matcher.indexIn(txt) != -1);
-                        if (found) break;
-                    }
+                }
+                // fall back to 'contains' search
+                if (!found) {
+                    matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
+                    if (matcher.indexIn(txt) != -1)
+                        qDebug() << "Simple version match!";
+                    found = found && (matcher.indexIn(txt) != -1);
+                    if (found) break;
                 }
             }
             if (!found) continue;
