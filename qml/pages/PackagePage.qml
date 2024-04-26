@@ -96,6 +96,15 @@ Page {
             Column {
                 width: parent.width
 
+                Label {
+                    visible: pkg.archived
+                    //% "The source code repository is marked \"archived\", information may be out-of-date."
+                    text: qsTrId("chum-repo-archived").arg(pkg.releasesCount)
+                    wrapMode: Text.Wrap
+                    color: Theme.highlightColor
+                    width: parent.width
+                }
+
                 MoreButton {
                     id: btnReleases
                     visible: pkg.releasesCount > 0

@@ -94,6 +94,7 @@ query {
         name
       }
     }
+    isArchived
     stargazerCount
     homepageUrl
     forks {
@@ -156,6 +157,9 @@ query {
         vi = r.value("discussions").toObject().value("totalCount").toInt();
         if (vi>=0)
             m_package->setUrlForum(QStringLiteral("https://github.com/%1/%2/discussions").arg(m_org, m_repo));
+
+        bool archived = r.value("isArchived").toBool();
+        m_package->setArchived(archived);
 
         reply->deleteLater();
     });

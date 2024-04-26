@@ -11,6 +11,7 @@ class ChumPackage : public QObject {
 
     Q_PROPERTY(QString id READ id NOTIFY idChanged)
 
+    Q_PROPERTY(bool       archived   READ archived    NOTIFY updated)
     Q_PROPERTY(QString    availableVersion READ availableVersion NOTIFY updated)
     Q_PROPERTY(QStringList categories READ categories   NOTIFY updated)
     Q_PROPERTY(QString    description READ description  NOTIFY updated)
@@ -42,6 +43,7 @@ class ChumPackage : public QObject {
 public:
     enum Role {
         PackageIdRole = Qt::UserRole + 1,
+        PackageArchivedRole,
         PackageAvailableVersionRole,
         PackageCategoriesRole,
         PackageDescriptionRole,
@@ -80,6 +82,7 @@ public:
     QString pkidInstalled() const { return m_pkid_installed; }
     bool detailsNeedsUpdate() const { return m_details_update; }
 
+    bool    archived() const;
     QString availableVersion() const { return m_available_version; }
     QStringList categories() const { return m_categories; }
     QString description() const { return m_description; }
@@ -132,6 +135,7 @@ signals:
     void updateAvailableChanged();
 
 private:
+    void setArchived(const bool &a);
     void setInstalledVersion(const QString &v);
 
 private:
@@ -148,6 +152,7 @@ private:
     bool        m_update_available{false};
     bool        m_details_update{false};
 
+    bool        m_archived{false};
     QString     m_available_version;
     QStringList m_categories;
     QString     m_description;

@@ -56,6 +56,10 @@ bool ChumPackage::installed() const {
     return !m_installed_version.isEmpty();
 }
 
+bool ChumPackage::archived() const {
+    return m_archived;
+}
+
 LoadableObject* ChumPackage::issue(const QString &id) {
     if (m_project != nullptr)
         m_project->issue(id, m_issue_info);
@@ -242,6 +246,13 @@ void ChumPackage::setDetails(const PackageKit::Details &v) {
 
 void ChumPackage::clearInstalled() {
     setPkidInstalled(QString{});
+}
+
+void ChumPackage::setArchived(const bool &a)
+{
+    if (a == m_archived) return;
+    m_archived = a;
+    emit updated(m_archived, PackageArchivedRole);
 }
 
 void ChumPackage::setPkidInstalled(const QString &pkid) {

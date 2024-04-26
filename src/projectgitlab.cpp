@@ -96,6 +96,7 @@ void ProjectGitLab::fetchRepoInfo() {
 "query": "
 query {
   project(fullPath: \"%1\") {
+    archived
     forksCount
     openIssuesCount
     mergeRequests(state: opened) {
@@ -135,6 +136,9 @@ query {
 
     vi = r.value("releases").toObject().value("count").toInt(-1);
     if (vi>=0) m_package->setReleasesCount(vi);
+
+    bool archived = r.value("archived").toBool();
+    m_package->setArchived(archived);
 
     reply->deleteLater();
   });
