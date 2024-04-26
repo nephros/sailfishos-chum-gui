@@ -98,27 +98,28 @@ void ChumPackagesModel::reset() {
                         p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
 
-            /*
+            qDebug() << "Searching for" << m_query << "in" << p->name();
             // try beginning-of-word and end-of-word first
             QString ors =  QRegExp::escape(m_search.replace(QRegExp("\\W+"), "|"));
             qDebug() << "Looking for re:" << ors << "with word boundary";
             QRegExp begre( "\\b(" + ors + ")");
             QRegExp endre( "("    + ors + ")\\b");
-            found = found && (begre.indexIn(txt) || endre.indexIn(txt));
-            if (found) {
-                qDebug() << "Match:" begre.capturedTexts() ;
-                qDebug() << "Match:" endre.capturedTexts() ;
-            }
+            QRegExp orsre(ors);
+            qDebug() << "Bounded begin version match:" << (begre.indexIn(txt) != -1);
+            qDebug() << "Bounded end version match:" << (endre.indexIn(txt) != -1);
+            qDebug() << "Unbounded version match:" << (ors.indexIn(txt) != -1);
+            qDebug() << "Exact version match:" << ors.exactMatch(txt);
+            //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
+            //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
             // nothing, lets try without boundaries
-            if (!found) {
-                qDebug() << "Nothing, Looking for re:" << ors;
-                QRegExp orsre(ors);
-                found = found && orsre.indexIn(txt);
-                if (found) {
-                    qDebug() << "Match:" orsre.capturedTexts() ;
-                }
-            }
-            */
+            //if (!found) {
+                //qDebug() << "Nothing, Looking for re:" << ors;
+                //found = found && orsre.indexIn(txt);
+                //if (found) {
+                //    qDebug() << "Match:" orsre.capturedTexts() ;
+                //}
+            //}
+
             /*
             // nothing, lets try a simple match
             if (!found) {
@@ -130,7 +131,12 @@ void ChumPackagesModel::reset() {
             */
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
+                qDebug() << "New version match:" << (matcher.indexIn(txt) != -1);
                 found = found && (matcher.indexIn(txt) != -1);
+            }
+            for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
+                query = query.normalized(QString::NormalizationForm_KC).toLower();
+                qDebug() << "Old version match:" << txt.contains(query);
             }
             if (!found) continue;
         }
