@@ -146,9 +146,9 @@ void ChumPackagesModel::reset() {
                     QRegularExpression::CaseInsensitiveOption
                 );
                 for ( QString pat: { query, R"(\b)" + query}) {
-                re.setPattern(pat)
-                if (re.match(txt).hasMatch())
-                    qDebug() << "Exact word match using!" << re.pattern();
+                    re.setPattern(pat);
+                    if (re.match(txt).hasMatch())
+                        qDebug() << "Exact word match using!" << re.pattern();
                 }
             }
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
