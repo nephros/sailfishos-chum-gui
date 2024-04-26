@@ -100,10 +100,10 @@ void ChumPackagesModel::reset() {
 
             qDebug() << "Searching for" << m_search << "in" << p->name();
             // try beginning-of-word and end-of-word first
-            QString ors =  QRegExp::escape(m_search.replace(QRegExp("\\W+"), "|"));
+            QString ors =  QRegExp::escape(m_search.replace(QRegExp(R"\W+"), "|"));
             qDebug() << "Looking for re:" << ors << "with word boundary";
-            QRegExp begre( "\\b(" + ors + ")");
-            QRegExp endre( "("    + ors + ")\\b");
+            QRegExp begre( R"\b(" + ors + ")");
+            QRegExp endre( "("    + ors + R")\b");
             QRegExp orsre(ors);
             qDebug() << "Bounded begin version match:" << (begre.indexIn(txt) != -1);
             qDebug() << "Bounded end version match:" << (endre.indexIn(txt) != -1);
