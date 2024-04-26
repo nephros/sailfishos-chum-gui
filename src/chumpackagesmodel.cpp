@@ -111,7 +111,7 @@ void ChumPackagesModel::reset() {
                 qDebug() << "Bounded end version match!";
             if (orsre.indexIn(txt) != -1)
                 qDebug() << "Unbounded version match!";
-            if orsre.exactMatch(txt)
+            if (orsre.exactMatch(txt))
                 qDebug() << "Exact version match!";
             //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
             //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
@@ -141,7 +141,7 @@ void ChumPackagesModel::reset() {
             }
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 query = query.normalized(QString::NormalizationForm_KC).toLower();
-                if txt.contains(query)
+                if (txt.contains(query))
                     qDebug() << "Old version match!";
             }
             if (!found) continue;
