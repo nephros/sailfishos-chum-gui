@@ -134,27 +134,25 @@ void ChumPackagesModel::reset() {
                 }
             }
             */
+            QRegularExpression re;
+            re.setPatternOptions( QRegularExpression::MultilineOption | QRegularExpression::CaseInsensitiveOption);
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
-                if (matcher.indexIn(txt) != -1)
-                    qDebug() << "New version match!";
-                found = found && (matcher.indexIn(txt) != -1);
-
-                QRegularExpression re;
-                re.setPatternOptions(
-                    QRegularExpression::MultilineOption |
-                    QRegularExpression::CaseInsensitiveOption
-                );
-                for ( QString pat: { query, R"(\b)" + query}) {
+                for ( QString pat: { R"(\b)" + query, query + R"(\b)", query}) {
                     re.setPattern(pat);
-                    if (re.match(txt).hasMatch())
+                    if (re.match(txt).hasMatch()) {
                         qDebug() << "Exact word match using!" << re.pattern();
+                        found = found && true;
+                        break;
+                    }
                 }
-            }
-            for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                query = query.normalized(QString::NormalizationForm_KC).toLower();
-                if (txt.contains(query))
-                    qDebug() << "Old version match!";
+                if (!found) {
+                    // fall back to 'simple' search
+                    matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
+                    if (matcher.indexIn(txt) != -1)
+                        qDebug() << "New version match!";
+                    found = found && (matcher.indexIn(txt) != -1);
+                }
+                //if (found) break;
             }
             if (!found) continue;
         }
