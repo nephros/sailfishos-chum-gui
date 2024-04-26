@@ -99,49 +99,20 @@ void ChumPackagesModel::reset() {
                         p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
 
-            qDebug() << "Searching for" << m_search << "in" << p->name();
-            // try beginning-of-word and end-of-word first
-            //QString ors =  "(" + QRegularExpression::escape(m_search.replace(QRegularExpression(R"(\W+)"), "|")) + ")";
-            //QRegularExpression begre(R"(\b)" + ors);
-            //QRegularExpression endre(ors + R"(\b)");
-            //QRegularExpression orsre(ors);
-            //qDebug() << "Searching for" << m_search << "in" << p->name() << "re:" << ors;
-            //if (begre.indexIn(txt) != -1)
-            //    qDebug() << "Bounded begin version match!";
-            //if (endre.indexIn(txt) != -1)
-            //    qDebug() << "Bounded end version match!";
-            //if (orsre.indexIn(txt) != -1)
-            //    qDebug() << "Unbounded version match!";
-            //if (orsre.exactMatch(txt))
-            //    qDebug() << "Exact version match!";
-            //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
-            //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
-            // nothing, lets try without boundaries
-            //if (!found) {
-                //qDebug() << "Nothing, Looking for re:" << ors;
-                //found = found && orsre.indexIn(txt);
-                //if (found) {
-                //    qDebug() << "Match:" orsre.capturedTexts() ;
-                //}
-            //}
-
-            /*
-            // nothing, lets try a simple match
-            if (!found) {
-                for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                    query = query.normalized(QString::NormalizationForm_KC).toLower();
-                    found = found && txt.contains(query);
-                }
-            }
-            */
             QRegularExpression re;
             re.setPatternOptions( QRegularExpression::MultilineOption | QRegularExpression::CaseInsensitiveOption);
+            QString all =  "(" + QRegularExpression::escape(m_search.replace(QRegularExpression("\\s+"), "|")) + ")";
+            re.setPattern(all);
+            if (re.match(txt).hasMatch()) {
+                //found = true;
+                break; // found true by default
+            }
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                for ( QString pat: { R"(\b)" + query, query + R"(\b)", query}) {
+                for ( QString pat: { "\\b" + query, query + "\\b", query}) {
                     re.setPattern(pat);
+                    found = found && re.match(txt).hasMatch();
                     if (re.match(txt).hasMatch()) {
-                        qDebug() << "Exact word match using!" << re.pattern();
-                        found = found && true;
+                        qDebug() << "Exact word matching" << p->name() << " using" << re.pattern();
                         break;
                     }
                 }
@@ -149,10 +120,9 @@ void ChumPackagesModel::reset() {
                     // fall back to 'simple' search
                     matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
                     if (matcher.indexIn(txt) != -1)
-                        qDebug() << "New version match!";
+                        qDebug() << "Simple version match!";
                     found = found && (matcher.indexIn(txt) != -1);
                 }
-                //if (found) break;
             }
             if (!found) continue;
         }
