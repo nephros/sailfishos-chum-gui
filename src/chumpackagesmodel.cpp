@@ -139,7 +139,7 @@ void ChumPackagesModel::reset() {
                     qDebug() << "New version match!";
                 found = found && (matcher.indexIn(txt) != -1);
 
-                QRegularExpression re;
+                QRegularExpression re = QRegularExpression();
                 re.setPatternOptions(
                     QRegularExpression::MultilineOption |
                     QRegularExpression::CaseInsensitiveOption
