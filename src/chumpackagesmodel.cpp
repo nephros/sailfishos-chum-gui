@@ -115,8 +115,8 @@ void ChumPackagesModel::reset() {
                     found = found && re.match(txt).hasMatch();
                     if (re.match(txt).hasMatch()) {
                         qDebug() << "Exact word matching" << p->name() << " using" << re.pattern();
-                        break;
                     }
+                    if (found) break;
                 }
                 // fall back to 'contains' search
                 if (!found) {
