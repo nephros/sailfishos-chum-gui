@@ -100,15 +100,19 @@ void ChumPackagesModel::reset() {
 
             qDebug() << "Searching for" << m_search << "in" << p->name();
             // try beginning-of-word and end-of-word first
-            QString ors =  QRegExp::escape(m_search.replace(QRegExp(R"\W+"), "|"));
-            qDebug() << "Looking for re:" << ors << "with word boundary";
-            QRegExp begre( R"\b(" + ors + ")");
-            QRegExp endre( "("    + ors + R")\b");
+            QString ors =  "(" + QRegExp::escape(m_search.replace(QRegExp(R"(\W+)"), "|")) + ")";
+            QRegExp begre(R"(\b)" + ors);
+            QRegExp endre(ors + R"(\b)");
             QRegExp orsre(ors);
-            qDebug() << "Bounded begin version match:" << (begre.indexIn(txt) != -1);
-            qDebug() << "Bounded end version match:" << (endre.indexIn(txt) != -1);
-            qDebug() << "Unbounded version match:" << (orsre.indexIn(txt) != -1);
-            qDebug() << "Exact version match:" << orsre.exactMatch(txt);
+            qDebug() << "Looking for re:" << ors << "with/without word boundary";
+            if (begre.indexIn(txt) != -1)
+                qDebug() << "Bounded begin version match!";
+            if (endre.indexIn(txt) != -1)
+                qDebug() << "Bounded end version match!";
+            if (orsre.indexIn(txt) != -1)
+                qDebug() << "Unbounded version match!";
+            if orsre.exactMatch(txt)
+                qDebug() << "Exact version match!";
             //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
             //found = found && (begre.indexIn(txt) || endre.indexIn(txt));
             // nothing, lets try without boundaries
@@ -131,12 +135,14 @@ void ChumPackagesModel::reset() {
             */
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 matcher.setPattern(query.normalized(QString::NormalizationForm_KC).toLower());
-                qDebug() << "New version match:" << (matcher.indexIn(txt) != -1);
+                if (matcher.indexIn(txt) != -1)
+                    qDebug() << "New version match!";
                 found = found && (matcher.indexIn(txt) != -1);
             }
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 query = query.normalized(QString::NormalizationForm_KC).toLower();
-                qDebug() << "Old version match:" << txt.contains(query);
+                if txt.contains(query)
+                    qDebug() << "Old version match!";
             }
             if (!found) continue;
         }
