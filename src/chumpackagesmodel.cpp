@@ -3,6 +3,7 @@
 
 #include <QDebug>
 #include <QRegularExpression>
+#include <QStringMatcher>
 
 #include <algorithm>
 
@@ -94,15 +95,16 @@ void ChumPackagesModel::reset() {
                         p->categories().join(' '),
                         p->developer() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
+            QRegularExpression re( "", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption );
+            QStringMatcher matcher("", Qt::CaseInsensitive);
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 query = query.normalized(QString::NormalizationForm_KC).toLower();
-                QRegularExpression re( "(\\b" + query + "|" + query + "\\b)",
-                                   QRegularExpression::CaseInsensitiveOption |
-                                   QRegularExpression::MultilineOption );
+                re.setPattern( "(\\b" + query + "|" + query + "\\b)");
+                matcher.setPattern(query);
                 found = found && (
                         txt.contains(re)
-                     || p->summary().contains(query)
-                     || p->description().contains(query) );
+                     || matcher.indexIn(p->summary())
+                     || matcher.indexIn(p->description()));
             }
             if (!found) continue;
         }
