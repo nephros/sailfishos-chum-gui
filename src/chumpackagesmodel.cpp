@@ -94,16 +94,18 @@ void ChumPackagesModel::reset() {
                         p->categories().join(' '),
                         p->developer() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
+            QStringList lines2{ p->summary(),
+                        p->description()};
+            QString txt2 = lines2.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             QRegularExpression re( "",
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 query = query.normalized(QString::NormalizationForm_KC).toLower();
                 re.setPattern( "(\\b" + query + "|" + query + "\\b)");
-                found = found && (
-                        txt.contains(re)
-                     || p->summary().contains(query)
-                     || p->description().contains(query) );
+                found = found && txt.contains(re);
+                if (!found)
+                    found = found && txt2.contains(query);
             }
             if (!found) continue;
         }
