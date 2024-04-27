@@ -97,7 +97,7 @@ void ChumPackagesModel::reset() {
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             //lines.append(p->description().normalized(QString::NormalizationForm_KC).toLower());
             //QString extxt = lines.join('\n');
-            QString query = m_search.replace("\\W+",'|');
+            QString query = m_search.replace(QRegularExpression("\\W+"),'|');
             query = "(" + query + ")";
             QRegularExpression re(query,
                     QRegularExpression::CaseInsensitiveOption |
