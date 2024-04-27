@@ -89,27 +89,20 @@ void ChumPackagesModel::reset() {
                 !m_show_category.intersects(p->categories().toSet()))
             continue;
         if (!m_search.isEmpty()) {
-            bool found = true;
             QStringList lines{ p->name(),
                         p->categories().join(' '),
                         p->developer(),
-                        p->summary() };
+                        p->summary(),
+                        p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
-            lines.append(p->description().normalized(QString::NormalizationForm_KC).toLower());
-            QString extxt = lines.join('\n');
-            QRegularExpression re( "",
+            //lines.append(p->description().normalized(QString::NormalizationForm_KC).toLower());
+            //QString extxt = lines.join('\n');
+            QString query = m_search.replace("\\W+",'|');
+            query = "(" + query + ")";
+            QRegularExpression re(query,
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
-            for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                query = query.normalized(QString::NormalizationForm_KC).toLower();
-                re.setPattern( "(\\b" + query + "|" + query + "\\b)");
-                found = found && txt.contains(re);
-                if (!found)
-                    found = found && extxt.contains(re);
-                // fall back to simple search if not found:
-                if (!found)
-                    found = found && extxt.contains(query);
-            }
+            bool found = re.match(txt).hasMatch();
             if (!found) continue;
         }
 
