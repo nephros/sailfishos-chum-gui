@@ -93,8 +93,8 @@ void ChumPackagesModel::reset() {
             QStringList lines{ p->name(),
                         p->summary(),
                         p->categories().join(' '),
-                        p->developer(),
-                        p->description() };
+                        p->developer() };
+                        //p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 query = query.normalized(QString::NormalizationForm_KC).toLower();
@@ -103,7 +103,7 @@ void ChumPackagesModel::reset() {
                     "(\\b" + query + "|" + query + "\\b)",
                     QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption
                     );
-                found = found && txt.contains(re);
+                found = found && (txt.contains(re) || p->description().contains(query)) };
             }
             if (!found) continue;
         }
