@@ -92,11 +92,9 @@ void ChumPackagesModel::reset() {
             bool found = true;
             QStringList lines{ p->name(),
                         p->categories().join(' '),
-                        p->developer() };
+                        p->developer(),
+                        p->summary() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
-            QStringList lines2{ p->summary(),
-                        p->description()};
-            QString txt2 = lines2.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             QRegularExpression re( "",
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
@@ -105,7 +103,7 @@ void ChumPackagesModel::reset() {
                 re.setPattern( "(\\b" + query + "|" + query + "\\b)");
                 found = found && txt.contains(re);
                 if (!found)
-                    found = found && txt2.contains(query);
+                    found = found && p->description().contains(query);
             }
             if (!found) continue;
         }
