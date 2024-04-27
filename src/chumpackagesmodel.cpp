@@ -2,6 +2,7 @@
 #include "chum.h"
 
 #include <QDebug>
+#include <QRegularExpression>
 
 #include <algorithm>
 
@@ -97,7 +98,12 @@ void ChumPackagesModel::reset() {
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                 query = query.normalized(QString::NormalizationForm_KC).toLower();
-                found = found && txt.contains(query);
+                //found = found && txt.contains(query);
+                QRegularExpression re(
+                    "(\\b" + query + "|" + query + "\\b)",
+                    QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption
+                    );
+                found = found && txt.contains(re);
             }
             if (!found) continue;
         }
