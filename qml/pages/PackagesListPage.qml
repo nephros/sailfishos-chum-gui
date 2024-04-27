@@ -41,6 +41,12 @@ Page {
                 //% "Search"
                 placeholderText: qsTrId("chum-search")
                 onTextChanged: page.search = text
+                EnterKey.iconSource: "image://theme/icon-m-enter-close"
+                EnterKey.onClicked: {
+                    if (chumModel.rowCount() > 0) {
+                        page.removeSearchFocus();
+                    }
+                }
             }
 
             Connections {
