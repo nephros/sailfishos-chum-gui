@@ -91,7 +91,7 @@ void ChumPackagesModel::reset() {
         if (!m_search.isEmpty()) {
             bool found = true;
             QStringList lines{ p->name(),
-                        p->summary(),
+                        //p->summary(),
                         p->categories().join(' '),
                         p->developer() };
                         //p->description() };
@@ -103,7 +103,11 @@ void ChumPackagesModel::reset() {
                     "(\\b" + query + "|" + query + "\\b)",
                     QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption
                     );
-                found = found && (txt.contains(re) || p->description().contains(query)) };
+                found = found && (
+                                txt.contains(re)
+                                || p->summary().contains(query)
+                                || p->description().contains(query)
+                                );
             }
             if (!found) continue;
         }
