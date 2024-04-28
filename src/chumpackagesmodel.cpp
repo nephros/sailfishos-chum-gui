@@ -90,19 +90,31 @@ void ChumPackagesModel::reset() {
             continue;
         if (!m_search.isEmpty()) {
             QStringList lines{ p->name(),
+                        p->summary(),
                         p->categories().join(' '),
                         p->developer(),
-                        p->summary(),
                         p->description() };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             //lines.append(p->description().normalized(QString::NormalizationForm_KC).toLower());
             //QString extxt = lines.join('\n');
-            QString query = m_search.replace(QRegularExpression("\\s+"), "|");
-            query = "(" + query + ")";
-            QRegularExpression re(query,
+            QString all = m_search.replace(QRegularExpression("\\s+"), "|");
+            query = "(" + all + ")";
+            QRegularExpression re(all,
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
             bool found = re.match(txt).hasMatch();
+            if (!found) {
+                for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
+                    query = query.normalized(QString::NormalizationForm_KC).toLower();
+                    re.setPattern("\\b" + query);
+                    found = re.match(txt).hasMatch();
+                    if (found) continue;
+                    re.setPattern(query + "\\b");
+                    found = re.match(txt).hasMatch();
+                    if (found) continue;
+                    found = found && txt.contains(query);
+                }
+            }
             if (!found) continue;
         }
 
