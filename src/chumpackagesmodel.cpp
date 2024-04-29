@@ -110,7 +110,8 @@ void ChumPackagesModel::reset() {
                 re.setPattern(pattern);
                 auto res = re.globalMatch(txt); // do a global match, returns iterator!
                 if (res.isValid()) {
-                    if (res.indexOf(re) != -1) {
+                    //if (res.indexOf(re) != -1) {
+                    if (res.hasNext()) {
                         found = true;
                         qDebug() << "found using" << pattern;
                         break;
