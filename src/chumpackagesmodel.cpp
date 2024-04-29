@@ -97,12 +97,14 @@ void ChumPackagesModel::reset() {
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             //lines.append(p->description().normalized(QString::NormalizationForm_KC).toLower());
             //QString extxt = lines.join('\n');
-            QString all = m_search.replace(QRegularExpression("\\s+"), "|");
+            QString all = m_search.simplified().replace(" ", "|");
             all = "(" + all + ")";
             QRegularExpression re(all,
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
             bool found = re.match(txt).hasMatch();
+            if ( found) 
+                    qDebug() << "found using" << re.pattern();
             if (!found) {
                 for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                     query = query.normalized(QString::NormalizationForm_KC).toLower();
