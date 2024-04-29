@@ -40,7 +40,7 @@ Page {
                 width: parent.width
                 //% "Search"
                 placeholderText: qsTrId("chum-search")
-                onTextChanged: page.search = text
+                onTextChanged: if (Math.abs(text.length - page.search.length) > 2) page.search = text
                 EnterKey.iconSource: "image://theme/icon-m-enter-close"
                 EnterKey.onClicked: {
                     if (chumModel.rowCount() > 0) {
