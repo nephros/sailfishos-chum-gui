@@ -89,22 +89,34 @@ void ChumPackagesModel::reset() {
                 !m_show_category.intersects(p->categories().toSet()))
             continue;
         if (!m_search.isEmpty()) {
+            bool found = false;
             QStringList lines{ p->name(),
                         p->summary(),
                         p->categories().join(' '),
                         p->developer(),
                         p->description() };
-            QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
-            //lines.append(p->description().normalized(QString::NormalizationForm_KC).toLower());
-            //QString extxt = lines.join('\n');
             QString all = m_search.simplified().replace(" ", "|");
-            all = "(" + all + ")";
-            QRegularExpression re(all,
+            QStringList patterns {
+                "(\\b(" + all + "[\\w]+)+",
+                "([\\w]+(" + all + "[\\w]+)+",
+                "([\\w]+(" + all + "\b)+" };
+            QRegularExpression re("",
+                    QRegularExpression::UseUnicodePropertiesOption |
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
-            bool found = re.match(txt).hasMatch();
-            if ( found) 
-                    qDebug() << "found using" << re.pattern();
+            for (QString pattern: patterns) {
+                re.setPattern(pattern);
+                if (re.isValid()) {
+                    if (lines.indexOf(re) != -1) {
+                        found = true;
+                        qDebug() << "found using" << pattern;
+                        break;
+                    }
+                } else {
+                    qDebug() << "invalid regexp:" << pattern;
+                }
+            }
+            /*
             if (!found) {
                 for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
                     query = query.normalized(QString::NormalizationForm_KC).toLower();
@@ -117,6 +129,7 @@ void ChumPackagesModel::reset() {
                     found = found && txt.contains(query);
                 }
             }
+            */
             if (!found) continue;
         }
 
