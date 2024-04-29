@@ -112,51 +112,26 @@ void ChumPackagesModel::reset() {
                     qDebug() << "match found for " << p->name() << "using simple search with " << re.pattern();
             }
             if (!found) {
-                // prepare a list of patterns to try
                 // create a regexp capture group from search terms
+                // treat ? and * as regexp wildcards
+                QString terms = m_search.simplified().replace("*", "\\w+").replace("?", ".").replace(" ", "|");
                 // (?:foo) is a noncapturing group, because we don't actually need the results.
-                QString terms = m_search.simplified().replace(" ", "|");
                 terms = "(?:" + terms + ")";
-                QStringList patterns {
-                    "(\\b"    + terms + "[\\w]+)+",  // (\b(foo|bar)[\w]+)+    term beginning must be a word boundary
-                    "([\\w]*" + terms + "[\\w]*)+",  // ([\w]+(foo|bar)[\w]+)+ any words containing term
-                    "([\\w]*" + terms + "\\b)+" };   // ([\w]+(foo|bar)\b)+    term must have a word boundary at the end
-
-                for (QString pattern: patterns) { // match patterns sequentially
-                    re.setPattern(pattern);
-                    if (!re.isValid()) {
-                        qDebug() << "invalid regexp:" << pattern;
-                    } else {
-                        if (txt.contains(re)) {
-                            found = true;
-                            qDebug() << "match found for " << p->name() << "using " << re.pattern();
-                            //break;
-                        }
-                        /*
-                        QRegularExpressionMatchIterator res = re.globalMatch(txt);
-                        if (res.hasNext()) {
-                            found = true;
-                            qDebug() << "match found for " << p->name << "using " << re.pattern();
-                            break;
-                        }
-                        */
+                // combine the terms group with:
+                //    (\b|[\w]+), so either word boundary, or substring at the beginning
+                //    ([\w]+|\b), so either substring at the end, or word boundry
+                QString pattern = "(" + "(?:\\b|[\\w]+)" + terms + "(?:[\\w]*|\\b)" + ")+";
+                re.setPattern(pattern);
+                if (!re.isValid()) {
+                    qDebug() << "invalid regexp:" << re.pattern();
+                } else {
+                    QRegularExpressionMatch match = re.match(txt);
+                    if (match.hasMatch()) {
+                        found = true;
+                        qDebug() << "match found for " << p->name() << "namely" << match.captured(1) << "using " << re.pattern();
                     }
                 }
             }
-            /*
-            if (!found) {
-                for (QString query: m_search.split(' ', QString::SkipEmptyParts)) {
-                    query = query.normalized(QString::NormalizationForm_KC).toLower();
-                    re.setPattern("\\b" + query);
-                    found = re.match(txt).hasMatch();
-                    if (found) continue;
-                    re.setPattern(query + "\\b");
-                    found = re.match(txt).hasMatch();
-                    if (found) continue;
-                    found = found && txt.contains(query);
-                }
-            }
-            */
             if (!found) continue;
         }
 
