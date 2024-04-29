@@ -95,29 +95,29 @@ void ChumPackagesModel::reset() {
                         p->categories().join(' '),
                         p->developer(),
                         p->description() };
-            QString txt = lines.join(' ');
+            QString txt = lines.join(' ').simplified();
             // prepare a list of patterns to try
             QString all = m_search.simplified().replace(" ", "|");
             QStringList patterns {
-                "(\\b(" + all + "[\\w]+)+",     // term beginning must be a word boundary
-                "([\\w]+(" + all + "[\\w]+)+",  // any words containing term
-                "([\\w]+(" + all + "\b)+" };    // term must be a word boundary at the end of a word
+                // (?:foo) is a noncapturing group, because we don't actually need the results.
+                "(\\b(?:" + all + ")[\\w]+)+",     // term beginning must be a word boundary
+                "([\\w]+(?:" + all + ")[\\w]+)+",  // any words containing term
+                "([\\w]+(?:" + all + "\b))+" };    // term must be a word boundary at the end of a word
             QRegularExpression re("",
                     QRegularExpression::UseUnicodePropertiesOption |
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
             for (QString pattern: patterns) { // match patterns sequentially
                 re.setPattern(pattern);
-                auto res = re.globalMatch(txt); // do a global match, returns iterator!
-                if (res.isValid()) {
-                    //if (res.indexOf(re) != -1) {
-                    if (res.hasNext()) {
+                if (!re.isValid()) {
+                    qDebug() << "invalid regexp:" << pattern;
+                } else {
+                    QRegularExpressionMatchIterator res = re.globalMatch(txt);
+                    if (res.matchType() != QRegularExpression::NoMatch) {
                         found = true;
                         qDebug() << "found using" << pattern;
                         break;
                     }
-                } else {
-                    qDebug() << "invalid regexp:" << pattern;
                 }
             }
             /*
