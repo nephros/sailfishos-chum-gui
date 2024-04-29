@@ -95,19 +95,23 @@ void ChumPackagesModel::reset() {
                         p->categories().join(' '),
                         p->developer(),
                         p->description() };
+            QString txt = lines.join(' ');
+            // prepare a list of patterns to try
             QString all = m_search.simplified().replace(" ", "|");
             QStringList patterns {
-                "(\\b(" + all + "[\\w]+)+",
-                "([\\w]+(" + all + "[\\w]+)+",
-                "([\\w]+(" + all + "\b)+" };
+                "(\\b(" + all + "[\\w]+)+",     // term beginning must be a word boundary
+                "([\\w]+(" + all + "[\\w]+)+",  // any words containing term
+                "([\\w]+(" + all + "\b)+" };    // term must be a word boundary at the end of a word
             QRegularExpression re("",
                     QRegularExpression::UseUnicodePropertiesOption |
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
-            for (QString pattern: patterns) {
+            for (QString pattern: patterns) { // match patterns sequentially
                 re.setPattern(pattern);
-                if (re.isValid()) {
-                    if (lines.indexOf(re) != -1) {
+                auto res = re.globalMatch(txt); // do a global match, returns iterator!
+                if (res.isValid()) {
+                    //if (res.indexOf(re) != -1) {
+                    if (res.hasNext()) {
                         found = true;
                         qDebug() << "found using" << pattern;
                         break;
