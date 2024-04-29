@@ -98,7 +98,7 @@ void ChumPackagesModel::reset() {
             //lines.append(p->description().normalized(QString::NormalizationForm_KC).toLower());
             //QString extxt = lines.join('\n');
             QString all = m_search.replace(QRegularExpression("\\s+"), "|");
-            query = "(" + all + ")";
+            all = "(" + all + ")";
             QRegularExpression re(all,
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
