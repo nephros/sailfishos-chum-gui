@@ -95,28 +95,44 @@ void ChumPackagesModel::reset() {
                         p->categories().join(' '),
                         p->developer(),
                         p->description() };
-            QString txt = lines.join(' ').simplified();
-            // prepare a list of patterns to try
-            QString all = m_search.simplified().replace(" ", "|");
-            QStringList patterns {
-                // (?:foo) is a noncapturing group, because we don't actually need the results.
-                "(\\b(?:" + all + ")[\\w]+)+",     // term beginning must be a word boundary
-                "([\\w]+(?:" + all + ")[\\w]+)+",  // any words containing term
-                "([\\w]+(?:" + all + "\b))+" };    // term must be a word boundary at the end of a word
+            // create search text, remove whitepsace, cap max length
+            QString txt = lines.join(' ').simplified().left(4096);
+
             QRegularExpression re("",
                     QRegularExpression::UseUnicodePropertiesOption |
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption );
-            for (QString pattern: patterns) { // match patterns sequentially
-                re.setPattern(pattern);
-                if (!re.isValid()) {
-                    qDebug() << "invalid regexp:" << pattern;
-                } else {
-                    QRegularExpressionMatchIterator res = re.globalMatch(txt);
-                    if (res.matchType() != QRegularExpression::NoMatch) {
-                        found = true;
-                        qDebug() << "found using" << pattern;
-                        break;
+
+            // if searching for one word only, do a simple search
+            if(!m_search.contains(' ')) {
+                // treat ? and * as regexp wildcards:
+                re.setPattern(m_search.replace("*", "\\w+").replace("?", "."));
+                found = txt.contains(re);
+                if (found)
+                    qDebug() << "found using simple search with " << re.pattern();
+            }
+            if (!found) {
+                // prepare a list of patterns to try
+                // create a regexp capture group from search terms
+                // (?:foo) is a noncapturing group, because we don't actually need the results.
+                QString terms = m_search.simplified().replace(" ", "|");
+                terms = "(?:" + terms + ")";
+                QStringList patterns {
+                    "(\\b"    + terms + "[\\w]+)+",  // (\b(foo|bar)[\w]+)+    term beginning must be a word boundary
+                    "([\\w]*" + terms + "[\\w]*)+",  // ([\w]+(foo|bar)[\w]+)+ any words containing term
+                    "([\\w]*" + terms + "\\b)+" };   // ([\w]+(foo|bar)\b)+    term must have a word boundary at the end
+
+                for (QString pattern: patterns) { // match patterns sequentially
+                    re.setPattern(pattern);
+                    if (!re.isValid()) {
+                        qDebug() << "invalid regexp:" << pattern;
+                    } else {
+                        QRegularExpressionMatchIterator res = re.globalMatch(txt);
+                        if (res.hasNext()) {
+                            found = true;
+                            qDebug() << "found using" << pattern;
+                            break;
+                        }
                     }
                 }
             }
