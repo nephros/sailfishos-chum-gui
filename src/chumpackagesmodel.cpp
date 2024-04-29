@@ -109,7 +109,7 @@ void ChumPackagesModel::reset() {
                 re.setPattern(m_search.replace("*", "\\w+").replace("?", "."));
                 found = txt.contains(re);
                 if (found)
-                    qDebug() << "found using simple search with " << re.pattern();
+                    qDebug() << "match found for " << p->name() << "using simple search with " << re.pattern();
             }
             if (!found) {
                 // prepare a list of patterns to try
@@ -127,12 +127,19 @@ void ChumPackagesModel::reset() {
                     if (!re.isValid()) {
                         qDebug() << "invalid regexp:" << pattern;
                     } else {
+                        if (txt.contains(re)) {
+                            found = true;
+                            qDebug() << "match found for " << p->name() << "using " << re.pattern();
+                            //break;
+                        }
+                        /*
                         QRegularExpressionMatchIterator res = re.globalMatch(txt);
                         if (res.hasNext()) {
                             found = true;
-                            qDebug() << "found using" << pattern;
+                            qDebug() << "match found for " << p->name << "using " << re.pattern();
                             break;
                         }
+                        */
                     }
                 }
             }
