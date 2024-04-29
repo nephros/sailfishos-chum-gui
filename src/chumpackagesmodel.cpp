@@ -95,6 +95,7 @@ void ChumPackagesModel::reset() {
                         p->categories().join(' '),
                         p->developer(),
                         p->description() };
+            QString txt = lines.join(' ');
             // prepare a list of patterns to try
             QString all = m_search.simplified().replace(" ", "|");
             QStringList patterns {
@@ -107,7 +108,7 @@ void ChumPackagesModel::reset() {
                     QRegularExpression::MultilineOption );
             for (QString pattern: patterns) { // match patterns sequentially
                 re.setPattern(pattern);
-                auto res = re.globalMatch(lines); // do a global match, returns iterator!
+                auto res = re.globalMatch(txt); // do a global match, returns iterator!
                 if (res.isValid()) {
                     if (res.indexOf(re) != -1) {
                         found = true;
