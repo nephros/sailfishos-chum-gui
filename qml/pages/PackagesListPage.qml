@@ -40,7 +40,25 @@ Page {
                 width: parent.width
                 //% "Search"
                 placeholderText: qsTrId("chum-search")
-                onTextChanged: page.search = text
+                label: (view.count > 0)
+                            //% "%n package(s) found"
+                            ? qsTrId("chum-search-results", view.count)
+                            //% "No packages found"
+                            : qsTrId("chum-search-no-results")
+                labelVisible: visible && text.length > 0
+                 onTextChanged: searchSubmitTimer.restart()
+                EnterKey.iconSource: "image://theme/icon-m-enter-close"
+                EnterKey.onClicked: {
+                    if (chumModel.rowCount() > 0) {
+                        page.removeSearchFocus();
+                    }
+                }
+                Timer { id: searchSubmitTimer
+                    running: false
+                    interval: 240
+                    onTriggered: page.search = searchField.text
+                }
+
             }
 
             Connections {
