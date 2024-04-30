@@ -111,12 +111,13 @@ void ChumPackagesModel::reset() {
                     //re.setPattern(QStringLiteral("((?:\\b|[\\w]+)(") + query + QStringLiteral(")(?:[\\w]+|\\b))+"));
                     re.setPattern(
                             QStringLiteral("(")
-                            + QStringLiteral("(\\b")    + query + QStringLiteral(")")
+                            + QStringLiteral("(\\b") + query + QStringLiteral(")")
                             + QStringLiteral("|")
                             + QStringLiteral("(") + query + QStringLiteral("\\b)")
                             + QStringLiteral(")+")
                             );
                     found = found && txt.contains(re);
+                    oldfound = oldfound && txt.contains(query.toLower());
                 }
             }
             if (!found) {
@@ -131,7 +132,6 @@ void ChumPackagesModel::reset() {
                             );
                     found = found && txt.contains(re);
                 }
-                oldfound = oldfound && txt.contains(query);
             }
             if (found != oldfound) {
                 qDebug() << p->name() << ":" << m_search << "newfound" << found << "oldfound" << oldfound;
