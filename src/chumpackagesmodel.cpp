@@ -113,14 +113,21 @@ void ChumPackagesModel::reset() {
             }
             if (!found) {
                 // create a regexp capture group from search terms
-                // treat ? and * as regexp wildcards
-                QString terms = m_search.simplified().replace("*", "\\w+").replace("?", ".").replace(" ", "|");
-                // (?:foo) is a noncapturing group, because we don't actually need the results.
-                terms = "(?:" + terms + ")";
+                QStringList termslist;
+                for (QString term: m_search.simplified().split(" ")) {
+                    // treat ? and * as regexp wildcards
+                    term = term.replace("*", "\\w+").replace("?", ".")
+                    // make it a sole capture group
+                    termslist.append(QStringLiteral("(") + term + QStringLiteral(")"));
+                }
+                // Make the patterns into another group, ((word1)|(word2))+
+                QString terms = QStringLiteral("(") + termslist.join("|") + QStringLiteral(")+");
+
                 // combine the terms group with:
                 //    (\b|[\w]+), so either word boundary, or substring at the beginning
                 //    ([\w]+|\b), so either substring at the end, or word boundry
-                QString pattern = QStringLiteral("(") + QStringLiteral("(?:\\b|[\\w]+)") + terms + QStringLiteral("(?:[\\w]*|\\b)") + QStringLiteral(")+");
+                //QString pattern = QStringLiteral("(") + QStringLiteral("(?:\\b|[\\w]+)") + terms + QStringLiteral("(?:[\\w]*|\\b)") + QStringLiteral(")+");
+                QString pattern = QStringLiteral("(?:\\b|[\\w]+)") + terms + QStringLiteral("(?:[\\w]+|\\b)");
                 re.setPattern(pattern);
                 if (!re.isValid()) {
                     qDebug() << "invalid regexp:" << re.pattern();
