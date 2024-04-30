@@ -90,6 +90,7 @@ void ChumPackagesModel::reset() {
             continue;
         if (!m_search.isEmpty()) {
             bool found = true;
+            bool oldfound = true;
             QStringList lines{ p->name(),
                         p->summary(),
                         p->categories().join(' '),
@@ -126,6 +127,10 @@ void ChumPackagesModel::reset() {
                         found = found && txt.contains(re);
                     }
                 }
+                oldfound = oldfound && txt.contains(query);
+            }
+            if (found != oldfound) {
+                qDebug() << p->name() << ":" << m_search << "newfound" << found << "oldfound" << oldfound;
             }
             if (!found) continue;
         }
