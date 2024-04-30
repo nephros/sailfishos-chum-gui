@@ -126,8 +126,8 @@ void ChumPackagesModel::reset() {
                         found = found && txt.contains(re);
                     }
                 }
-                if (!found) continue;
             }
+            if (!found) continue;
         }
 
         // add to filtered packages and follow package updates
