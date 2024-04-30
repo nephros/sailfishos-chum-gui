@@ -8,18 +8,31 @@
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
+    <message id="chum-search-results" numerus="yes">
+        <location filename="../qml/pages/PackagesListPage.qml" line="45"/>
+        <source>%n package(s) found</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message id="chum-search-no-results">
+        <location filename="../qml/pages/PackagesListPage.qml" line="47"/>
+        <source>No packages found</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message id="chum-packages-list-show-all">
-        <location filename="../qml/pages/PackagesListPage.qml" line="104"/>
+        <location filename="../qml/pages/PackagesListPage.qml" line="122"/>
         <source>Show all packages</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="chum-packages-list-show-apps">
-        <location filename="../qml/pages/PackagesListPage.qml" line="106"/>
+        <location filename="../qml/pages/PackagesListPage.qml" line="124"/>
         <source>Show applications only</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="chum-packages-list-apply-all-updates">
-        <location filename="../qml/pages/PackagesListPage.qml" line="111"/>
+        <location filename="../qml/pages/PackagesListPage.qml" line="129"/>
         <source>Update all</source>
         <translation type="unfinished"></translation>
     </message>
@@ -129,19 +142,19 @@
     </message>
     <message id="chum-update">
         <location filename="../qml/pages/PackagePage.qml" line="49"/>
-        <location filename="../qml/pages/PackagesListPage.qml" line="66"/>
+        <location filename="../qml/pages/PackagesListPage.qml" line="84"/>
         <source>Update</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="chum-install">
         <location filename="../qml/pages/PackagePage.qml" line="51"/>
-        <location filename="../qml/pages/PackagesListPage.qml" line="73"/>
+        <location filename="../qml/pages/PackagesListPage.qml" line="91"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message id="chum-uninstall">
         <location filename="../qml/pages/PackagePage.qml" line="21"/>
-        <location filename="../qml/pages/PackagesListPage.qml" line="72"/>
+        <location filename="../qml/pages/PackagesListPage.qml" line="90"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
