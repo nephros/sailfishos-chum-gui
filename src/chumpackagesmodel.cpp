@@ -114,20 +114,20 @@ void ChumPackagesModel::reset() {
                       + QStringLiteral(")+")
                 );
                 found = found && txt.contains(re);
-                if (!found) {
-                    for (QString query: terms) {
-                        query = QRegularExpression::escape(query.normalized(QString::NormalizationForm_KC));
-                        re.setPattern(
-                              QStringLiteral("(")
-                              + QStringLiteral("(\\b")    + query + QStringLiteral("[\\w]+)")
-                              + QStringLiteral("|")
-                              + QStringLiteral("([\\w]+") + query + QStringLiteral("\\b)")
-                              + QStringLiteral(")+")
-                        );
-                        found = found && txt.contains(re);
-                    }
-                }
                 oldfound = oldfound && txt.contains(query);
+            }
+            if (!found) {
+                for (QString query: terms) {
+                    query = QRegularExpression::escape(query.normalized(QString::NormalizationForm_KC));
+                    re.setPattern(
+                            QStringLiteral("(")
+                            + QStringLiteral("(\\b")    + query + QStringLiteral("[\\w]+)")
+                            + QStringLiteral("|")
+                            + QStringLiteral("([\\w]+") + query + QStringLiteral("\\b)")
+                            + QStringLiteral(")+")
+                            );
+                    found = found && txt.contains(re);
+                }
             }
             if (found != oldfound) {
                 qDebug() << p->name() << ":" << m_search << "newfound" << found << "oldfound" << oldfound;
