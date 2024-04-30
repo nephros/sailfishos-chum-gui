@@ -96,7 +96,7 @@ void ChumPackagesModel::reset() {
                         p->developer(),
                         p->description().left(1024) };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
-            QString terms = m_search.split(' ', QString::SkipEmptyParts);
+            QStringList terms = m_search.split(' ', QString::SkipEmptyParts);
             QRegularExpression re("",
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption |
