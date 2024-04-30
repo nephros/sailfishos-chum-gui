@@ -92,44 +92,40 @@ void ChumPackagesModel::reset() {
             bool found = true;
             bool oldfound = true;
             QStringList lines{ p->name(),
-                p->summary(),
-                p->categories().join(' '),
-                p->developer(),
-                p->description().left(1024) };
+                        p->summary(),
+                        p->categories().join(' '),
+                        p->developer(),
+                        p->description().left(1024) };
             QString txt = lines.join('\n').normalized(QString::NormalizationForm_KC).toLower();
             QStringList terms = m_search.split(' ', QString::SkipEmptyParts);
             QRegularExpression re("",
                     QRegularExpression::CaseInsensitiveOption |
                     QRegularExpression::MultilineOption |
                     QRegularExpression::UseUnicodePropertiesOption
-                    );
-            re.setPattern(QStringLiteral("(\\b(") + terms.join("|") + QStringLiteral(")\\b)+"));
-            found = txt.contains(re);
-            if (!found) {
-                for (QString query: terms) {
-                    query = QRegularExpression::escape(query.normalized(QString::NormalizationForm_KC));
-                    //re.setPattern(QStringLiteral("((?:\\b|[\\w]+)(") + query + QStringLiteral(")(?:[\\w]+|\\b))+"));
-                    re.setPattern(
-                            QStringLiteral("(")
-                            + QStringLiteral("(\\b")    + query + QStringLiteral(")")
-                            + QStringLiteral("|")
-                            + QStringLiteral("(") + query + QStringLiteral("\\b)")
-                            + QStringLiteral(")+")
-                            );
-                    found = found && txt.contains(re);
-                }
-            }
-            if (!found) {
-                for (QString query: terms) {
-                    query = QRegularExpression::escape(query.normalized(QString::NormalizationForm_KC));
-                    re.setPattern(
-                            QStringLiteral("(")
-                            + QStringLiteral("(\\b")    + query + QStringLiteral("[\\w]+)")
-                            + QStringLiteral("|")
-                            + QStringLiteral("([\\w]+") + query + QStringLiteral("\\b)")
-                            + QStringLiteral(")+")
-                            );
-                    found = found && txt.contains(re);
+            );
+            for (QString query: terms) {
+                query = QRegularExpression::escape(query.normalized(QString::NormalizationForm_KC));
+                //re.setPattern(QStringLiteral("((?:\\b|[\\w]+)(") + query + QStringLiteral(")(?:[\\w]+|\\b))+"));
+                re.setPattern(
+                      QStringLiteral("(")
+                      + QStringLiteral("(\\b")    + query + QStringLiteral(")")
+                      + QStringLiteral("|")
+                      + QStringLiteral("(") + query + QStringLiteral("\\b)")
+                      + QStringLiteral(")+")
+                );
+                found = found && txt.contains(re);
+                if (!found) {
+                    for (QString query: terms) {
+                        query = QRegularExpression::escape(query.normalized(QString::NormalizationForm_KC));
+                        re.setPattern(
+                              QStringLiteral("(")
+                              + QStringLiteral("(\\b")    + query + QStringLiteral("[\\w]+)")
+                              + QStringLiteral("|")
+                              + QStringLiteral("([\\w]+") + query + QStringLiteral("\\b)")
+                              + QStringLiteral(")+")
+                        );
+                        found = found && txt.contains(re);
+                    }
                 }
                 oldfound = oldfound && txt.contains(query);
             }
