@@ -120,7 +120,7 @@ void ChumPackagesModel::reset() {
                 // combine the terms group with:
                 //    (\b|[\w]+), so either word boundary, or substring at the beginning
                 //    ([\w]+|\b), so either substring at the end, or word boundry
-                QString pattern = "(" + "(?:\\b|[\\w]+)" + terms + "(?:[\\w]*|\\b)" + ")+";
+                QString pattern = QStringLiteral("(") + QStringLiteral("(?:\\b|[\\w]+)") + terms + QStringLiteral("(?:[\\w]*|\\b)") + QStringLiteral(")+");
                 re.setPattern(pattern);
                 if (!re.isValid()) {
                     qDebug() << "invalid regexp:" << re.pattern();
