@@ -127,6 +127,7 @@ void ChumPackagesModel::reset() {
                     }
                 }
                 if (!found) continue;
+            }
         }
 
         // add to filtered packages and follow package updates
