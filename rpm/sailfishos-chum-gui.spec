@@ -22,6 +22,11 @@ Source3:        token-forgejo.txt
 # Note that the rpmlintrc file must be named so according to
 # https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
 Source99:       %{name}.rpmlintrc
+# Do not include the token files in src rpms.
+# This reduces the risk of keys leaking, it also avoids build failure if they are missing.
+Nosource: 1
+Nosource: 2
+Nosource: 3
 Requires:       sailfishsilica-qt5 >= 0.10.9
 Requires:       ssu
 Requires(postun): ssu
@@ -101,6 +106,13 @@ Links:
 %setup -q
 
 %build
+if [ ! -e %{SOURCE1} ] || [ ! -e %{SOURCE2} ] || [ ! -e %{SOURCE3} ]; then
+  printf 'WARNING: API Token files missing.\nYou have to add the following to the source directory.\n%%s\n%%s\n%%s\n' %{SOURCE1} %{SOURCE2} %{SOURCE3}
+  # still continue the build, as we may want to be interested in the compilation only.
+  # packaging will fail at the end due to missing files though.
+  # exit 1
+fi
+
 # SFOS RPM cmake macro disables RPATH
 %cmake -DCHUMGUI_VERSION=%(echo %{version} | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')  \
        -DSAILFISHOS_TARGET_VERSION=%{!?sailfishos_version:0}%{?sailfishos_version}  \
