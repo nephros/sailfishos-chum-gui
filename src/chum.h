@@ -3,6 +3,7 @@
 #include <QHash>
 #include <QObject>
 #include <QSet>
+#include <QSysInfo>
 
 #include "chumpackage.h"
 #include "ssu.h"
@@ -22,6 +23,7 @@ class Chum : public QObject {
     Q_PROPERTY(QString status         READ status NOTIFY statusChanged)
     Q_PROPERTY(quint32 updatesCount   READ updatesCount NOTIFY updatesCountChanged)
     Q_PROPERTY(QString manualVersion  READ manualVersion WRITE setManualVersion NOTIFY manualVersionChanged)
+    Q_PROPERTY(QString sysArch        READ sysArch)
 
 public:
     enum PackageOperation {
@@ -41,6 +43,7 @@ public:
     QString status() const { return m_status; }
     quint32 updatesCount() const { return m_updates_count; }
     QString manualVersion() const { return m_manualVersion; }
+    QString sysArch() const;
 
     void    setRepoTesting(bool testing);
     void    setShowAppsByDefault(bool v);
