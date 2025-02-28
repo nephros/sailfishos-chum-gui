@@ -131,8 +131,7 @@ Page {
                     anchors.centerIn: parent
                     icon.source: "image://theme/icon-m-search"
                     onClicked: {
-                        var dlg = pageStack.push("RepoSelectDialog.qml"//,  { "arch": "" }
-                                  )
+                        var dlg = pageStack.push("RepoSelectDialog.qml", { "arch": Chum.sysArch })
                         dlg.selectedChanged.connect(function() {
                             txtRelease.text = dlg.selected
                         })

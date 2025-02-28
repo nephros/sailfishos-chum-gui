@@ -9,9 +9,21 @@ Page {
 
     // we assume the same config for chum and chum:testing for now
     property string url: "https://build.sailfishos.org/public/source/sailfishos:chum/_meta"
-    property string arch //: "armv8el"
+    // required, input
+    property string arch
+    // "output"
     property string selected
 
+    // map Chum::sysArch() to OBS repo archs names:
+    readonly property var archToString: {
+        "arm32":  "armv8el",
+        "arm64":  "aarch64",
+        "i386":   "i586",
+        "i486":   "i586",
+        "i586":   "i586",
+        "i686":   "i586",
+        "x86_64": "x86_64"
+    }
     BusyIndicator {
       id: busyInd
       anchors.centerIn: parent
@@ -20,17 +32,19 @@ Page {
     }
 
     NM.FilterModel { id: repoModel
-        filters: [ { 'role': 'arch', 'comparator': '==', 'value': page.arch }, ]
+        filters: [ { 'role': 'arch', 'comparator': '==', 'value': page.archToString[page.arch] }, ]
         sourceModel: metaModel
     }
 
     XmlListModel { id: metaModel
         source: page.url
         /*
-           <repository name="3.4.0.24_armv7hl">
-           <path project="sailfishos:3.4.0.24" repository="latest_armv7hl"/>
-           <arch>armv8el</arch>
-           </repository>
+           <project>
+              <repository name="3.4.0.24_armv7hl">
+              <path project="sailfishos:3.4.0.24" repository="latest_armv7hl"/>
+              <arch>armv8el</arch>
+              </repository>
+           </project>
          */
         query: "//project/repository"
         XmlRole{ name: "repo";     query: "@name/string()" }
@@ -71,6 +85,7 @@ Page {
                   || metaModel.status === XmlListModel.Null
         }
     }
+    /*
     Component.onCompleted: {
       var r = new XMLHttpRequest()
       r.open('GET', 'file:///etc/ssu/ssu.ini');
@@ -88,4 +103,5 @@ Page {
       }}
       r.send();
     }
+    */
 }
