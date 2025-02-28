@@ -127,6 +127,17 @@ Page {
                     console.log("Setting release to ", txtRelease.text);
                     Chum.manualVersion = txtRelease.text;
                 }
+                rightItem: IconButton { id: searchButton
+                    anchors.centerIn: parent
+                    icon.source: "image://theme/icon-m-search"
+                    onClicked: {
+                        var dlg = pageStack.push("RepoSelectDialog.qml"//,  { "arch": "" }
+                                  )
+                        dlg.selectedChanged.connect(function() {
+                            txtRelease.text = dlg.selected
+                        })
+                    }
+                }
             }
         }
     }
