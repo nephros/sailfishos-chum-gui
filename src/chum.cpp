@@ -54,12 +54,6 @@ QString Chum::packageId(const QString &pkg_id)
     return Daemon::packageName(pkg_id);
 }
 
-QString Chum::sysArch() const {
-    if (QSysInfo::currentCpuArchitecture() == QStringLiteral("arm64"))
-        return QStringLiteral("arm%1").arg(QSysInfo::WordSize);
-    return QSysInfo::currentCpuArchitecture();
-}
-
 void Chum::setShowAppsByDefault(bool v) {
     if (m_show_apps_by_default == v) return;
     m_show_apps_by_default = v;

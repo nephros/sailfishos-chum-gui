@@ -43,7 +43,12 @@ public:
     QString status() const { return m_status; }
     quint32 updatesCount() const { return m_updates_count; }
     QString manualVersion() const { return m_manualVersion; }
-    QString sysArch() const;
+    QString sysArch() const {
+        if (QSysInfo::currentCpuArchitecture() == QStringLiteral("arm64"))
+            return QStringLiteral("arm%1").arg(QSysInfo::WordSize);
+        return QSysInfo::currentCpuArchitecture();
+    }
+
 
     void    setRepoTesting(bool testing);
     void    setShowAppsByDefault(bool v);
