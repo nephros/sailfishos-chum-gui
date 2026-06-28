@@ -65,6 +65,29 @@ Item {
         }
 
         ChumDetailItem {
+            id: aicode
+            //% "AI Involved:"
+            label: qsTrId("chum-pkg-aicode")
+            value: switch (pkg.aiCode) {
+                case ChumPackage.NoAI:
+                  //% "No"
+                  return qsTrId("chum-pkg-aicode-noai")
+                  break
+                case ChumPackage.PartialAI:
+                  //% "In parts"
+                  return qsTrId("chum-pkg-aicode-partial")
+                  break
+                case ChumPackage.MostlyAI:
+                  //% "Largely AI-written"
+                  return qsTrId("chum-pkg-aicode-mostly")
+                  break
+                default:
+                //% "Unknown"
+                  return qsTrId("chum-pkg-aicode-unk")
+            }
+        }
+
+        ChumDetailItem {
             id: categories
             //% "Categories:"
             label: qsTrId("chum-pkg-categories")

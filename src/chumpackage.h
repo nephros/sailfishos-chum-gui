@@ -74,6 +74,7 @@ public:
     enum AIStatus {
         NoAI,
         PartialAI,
+        MostlyAI,
         FullAI
     };
     Q_ENUM(AIStatus)
