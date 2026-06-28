@@ -39,6 +39,7 @@ class ChumPackage : public QObject {
     Q_PROPERTY(QString    urlForum    READ urlForum     NOTIFY updated)
     Q_PROPERTY(QString    urlIssues   READ urlIssues    NOTIFY updated)
     Q_PROPERTY(QString    desktopFile READ desktopFile  NOTIFY updated)
+    Q_PROPERTY(QString    aiCode      READ aiCode       NOTIFY updated)
 
 public:
     enum Role {
@@ -57,6 +58,7 @@ public:
         PackageTypeRole,
         PackageUpdateAvailableRole,
         PackageDesktopFileRole,
+        PackageAICodeRole,
 
         PackageOtherRole,
         PackageRefreshRole // used for updates of many parameters
@@ -68,6 +70,13 @@ public:
         PackageGeneric
     };
     Q_ENUM(PackageType)
+
+    enum AIStatus {
+        NoAI,
+        PartialAI,
+        FullAI
+    };
+    Q_ENUM(AIStatus)
 
     ChumPackage(QObject *parent = nullptr);
     ChumPackage(const QString &id, QObject *parent = nullptr);
@@ -110,6 +119,7 @@ public:
     QString urlForum() const { return m_url_forum; }
     QString urlIssues() const { return m_url_issues; }
     QString desktopFile() const { return m_desktopFile; }
+    QString aiCode() const { return m_aiCode; }
 
     void setPkidLatest(const QString &pkid);
     void setPkidInstalled(const QString &pkid);
@@ -128,6 +138,7 @@ public:
     void setUrl(const QString &url);
     void setUrlForum(const QString &url);
     void setUrlIssues(const QString &url);
+    void aiCode(const AIStatus &status);
 
 signals:
     void idChanged();
@@ -180,4 +191,5 @@ private:
     QString     m_url_forum;
     QString     m_url_issues;
     QString     m_desktopFile;
+    QString     m_aiCode;
 };
