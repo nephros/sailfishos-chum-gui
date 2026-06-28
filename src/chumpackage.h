@@ -119,7 +119,7 @@ public:
     QString urlForum() const { return m_url_forum; }
     QString urlIssues() const { return m_url_issues; }
     QString desktopFile() const { return m_desktopFile; }
-    QString aiCode() const { return m_aiCode; }
+    enum AIStatus aiCode() const { return m_aiCode; }
 
     void setPkidLatest(const QString &pkid);
     void setPkidInstalled(const QString &pkid);
@@ -191,5 +191,5 @@ private:
     QString     m_url_forum;
     QString     m_url_issues;
     QString     m_desktopFile;
-    QString     m_aiCode;
+    AIStatus    m_aiCode;
 };

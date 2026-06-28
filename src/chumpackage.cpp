@@ -211,7 +211,7 @@ void ChumPackage::setDetails(const PackageKit::Details &v) {
     if (m_categories.contains(QStringLiteral("ConsoleOnly")))
         m_type = PackageApplicationConsole;
 
-    m_aiCode = json.value("AICode").toString();
+    m_aiCode = (AIStatus) json.value("AICode").toInt();
 
     m_repo_url = json.value("Custom").toObject().value("Repo").toString();
     m_packaging_repo_url = json.value("Custom").toObject().value("PackagingRepo").toString();
