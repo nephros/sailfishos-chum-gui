@@ -102,6 +102,34 @@ MouseArea {
         }
 
         ChumDetailItem {
+            id: aicode
+            //% "AI Involved:"
+            label: qsTrId("chum-pkg-aicode")
+            visible: (!!pkg.aiCode && (pkg.aiCode != ChumPackage.Unknown) )
+            value: switch (pkg.aiCode) {
+                case ChumPackage.NoAI:
+                    //% "No"
+                    return qsTrId("chum-pkg-aicode-noai")
+                    break
+                case ChumPackage.PartialAI:
+                    //% "In parts"
+                    return qsTrId("chum-pkg-aicode-partial")
+                    break
+                case ChumPackage.MostlyAI:
+                    //% "Largely AI-written"
+                    return qsTrId("chum-pkg-aicode-mostly")
+                    break
+                case ChumPackage.FullAI:
+                    //% "Fully AI-written"
+                    return qsTrId("chum-pkg-aicode-full")
+                    break
+                default:
+                    ////% "Unknown"
+                    //return qsTrId("chum-pkg-aicode-unk")
+            }
+        }
+
+        ChumDetailItem {
             visible: !!pkg.url
             text: '<font color="%1">%3</font> <font color="%2"><a href="%4">%4</a></font>'
             .arg(Theme.secondaryHighlightColor)
