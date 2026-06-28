@@ -82,6 +82,11 @@ Item {
                   return qsTrId("chum-pkg-aicode-mostly")
                   break
                 default:
+                case ChumPackage.FullAI:
+                  //% "Fully AI-written"
+                  return qsTrId("chum-pkg-aicode-full")
+                  break
+                default:
                 //% "Unknown"
                   return qsTrId("chum-pkg-aicode-unk")
             }
