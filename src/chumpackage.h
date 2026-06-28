@@ -75,7 +75,9 @@ public:
         NoAI,
         PartialAI,
         MostlyAI,
-        FullAI
+        FullAI,
+
+        Unknown
     };
     Q_ENUM(AIStatus)
 

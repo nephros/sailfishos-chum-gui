@@ -211,7 +211,12 @@ void ChumPackage::setDetails(const PackageKit::Details &v) {
     if (m_categories.contains(QStringLiteral("ConsoleOnly")))
         m_type = PackageApplicationConsole;
 
-    m_aiCode = (AIStatus) json.value("AICode").toInt();
+    m_aiCode = AIStatus::Unknown;
+    QString aivalue = json.value("AICode").toString();
+    if (QString::compare(aivalue, "Full") == 0) { m_aiCode = AIStatus::FullAI; } else
+    if (QString::compare(aivalue, "Mostly") == 0) { m_aiCode = AIStatus::MostlyAI; } else
+    if (QString::compare(aivalue, "Partially") == 0) { m_aiCode = AIStatus::PartialAI; } else
+    if (QString::compare(aivalue, "None") == 0) { m_aiCode = AIStatus::NoAI; }
 
     m_repo_url = json.value("Custom").toObject().value("Repo").toString();
     m_packaging_repo_url = json.value("Custom").toObject().value("PackagingRepo").toString();
