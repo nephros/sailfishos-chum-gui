@@ -122,7 +122,7 @@ public:
     QString urlForum() const { return m_url_forum; }
     QString urlIssues() const { return m_url_issues; }
     QString desktopFile() const { return m_desktopFile; }
-    enum AIStatus aiCode() const { return m_aiCode; }
+    AIStatus aiCode() const { return m_aiCode; }
 
     void setPkidLatest(const QString &pkid);
     void setPkidInstalled(const QString &pkid);

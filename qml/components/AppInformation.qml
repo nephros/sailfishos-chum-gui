@@ -124,8 +124,8 @@ MouseArea {
                     return qsTrId("chum-pkg-aicode-full")
                     break
                 default:
-                    ////% "Unknown"
-                    //return qsTrId("chum-pkg-aicode-unk")
+                    //% "Unknown"
+                    return qsTrId("chum-pkg-aicode-unk")
             }
         }
 
