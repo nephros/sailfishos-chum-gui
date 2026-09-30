@@ -1,3 +1,7 @@
+# In case we need versioning
+%global badges_version 1.0
+%global badges_name ai-badge-icons
+
 Name:           sailfishos-chum-gui
 # Note that the value of %%{name} must be the project name at GitHub.
 Summary:        GUI application for utilising the SailfishOS:Chum community repository
@@ -28,6 +32,8 @@ Requires(postun): ssu
 # The oldest SailfishOS release which SailfishOS:Chum supports, because it is the
 # oldest useable DoD-repo at https://build.sailfishos.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
+# Icons
+Requires: %{badges_name} = %{badges_version}
 # Provide (anti-)dependencies to sibling packages:
 Conflicts:      %{name}-installer
 Obsoletes:      %{name}-installer 
@@ -97,6 +103,25 @@ Links:
 %define _source_payload w6.gzdio
 %define _binary_payload w2.xzdio
 
+%package ai-badges
+Summary: AI badge icons used in SailfishOS:Chum GUI
+Provides: %{badges_name} = %{badges_version}
+
+%description ai-badges
+%if 0%{?_chum}
+Title: SailfishOS:Chum GUI AI Badges
+Type: addon
+Categories:
+ - System
+ - Settings
+Custom:
+  Repo: %{url}
+Links:
+  Homepage: https://openrepos.net/content/olf/sailfishoschum-gui-installer
+  Help: %{url}/issues
+  Bugtracker: %{url}/issues
+%endif
+
 %prep
 %setup -q
 
@@ -162,5 +187,7 @@ exit 0
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
-%{_datadir}/themes/sailfish-default/silica/*/icons/AI-score-*.png
 %{_datadir}/mapplauncherd/privileges.d/%{name}
+
+%files ai-badges
+%{_datadir}/themes/sailfish-default/silica/*/icons/AI-score-*.png
