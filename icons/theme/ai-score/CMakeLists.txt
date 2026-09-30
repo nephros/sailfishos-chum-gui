@@ -17,6 +17,11 @@ add_custom_command(
     DEPENDS svgs/icons/*.svg
 )
 
+install(DIRECTORY svgs/icons/
+        DESTINATION /usr/share/icons/hicolor/scalable/apps
+        FILES_MATCHING PATTERN "*.svg"
+)
+
 set(THEMENAME sailfish-default)
 set(THEME_PATH share/themes/${THEMENAME}/silica)
 install(DIRECTORY z1.0

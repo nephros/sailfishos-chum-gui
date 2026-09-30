@@ -122,6 +122,25 @@ Links:
   Bugtracker: %{url}/issues
 %endif
 
+%package ai-badges-svg
+Summary: AI badge icons used in SailfishOS:Chum GUI
+Provides: %{badges_name}-svg = %{badges_version}
+
+%description ai-badges-svg
+%if 0%{?_chum}
+Title: SailfishOS:Chum GUI AI Badges (SVG)
+Type: addon
+Categories:
+ - System
+ - Settings
+Custom:
+  Repo: %{url}
+Links:
+  Homepage: https://openrepos.net/content/olf/sailfishoschum-gui-installer
+  Help: %{url}/issues
+  Bugtracker: %{url}/issues
+%endif
+
 %prep
 %setup -q
 
@@ -191,3 +210,6 @@ exit 0
 
 %files ai-badges
 %{_datadir}/themes/sailfish-default/silica/*/icons/AI-score-*.png
+
+%files ai-badges-svg
+%{_datadir}/icons/hicolor/scalable/apps/AI-score-*.svg
